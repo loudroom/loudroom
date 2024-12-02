@@ -57,7 +57,6 @@ function toggleMenu() {
 }
 
 /*----------------------- Connect wallet ------------------------------------*/
-
 const getWeb3 = async () => {
   return new Promise(async (resolve, reject) => {
     const web3 = new Web3(window.ethereum); // Initialize Web3
@@ -77,8 +76,19 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       const web3 = await getWeb3();  // Get Web3 instance
       const walletAddress = await web3.eth.getAccounts();  // Fetch wallet addresses
+
+      // Check if we received any wallet addresses
+      if (walletAddress.length === 0) {
+        console.error("No wallet address found.");
+        return;
+      }
+
       const walletBalanceInWei = await web3.eth.getBalance(walletAddress[0]); // Get balance in Wei
       const walletBalanceInEth = Web3.utils.fromWei(walletBalanceInWei, "ether");  // Convert balance to ETH
+
+      // Debugging: Check values before updating the UI
+      console.log("Wallet Address:", walletAddress[0]);
+      console.log("Wallet Balance (ETH):", walletBalanceInEth);
 
       // Hide the button after connection
       target.setAttribute("hidden", "hidden");
