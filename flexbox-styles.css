@@ -1,0 +1,953 @@
+/* General Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  height: 100vh;
+  margin: 0;
+  overflow: auto;
+  display: flex;
+  justify-content: center;
+  align-items:  flex-start;
+  background-color: rgba(3, 13, 67, 0.9); /* Base background color */
+}
+html {
+  scroll-behavior: smooth;
+}
+
+.width100 {
+  display: flex;
+  flex-wrap: wrap; /* Allow the items to wrap onto a new line if needed */
+ justify-content: center;
+  width: 100vw; /* Full viewport width */
+	
+}
+
+/* Style for individual graph items */
+.width50 {
+ display: flex;
+  flex-wrap: wrap; /* Allow the items to wrap onto a new line if needed */
+  width: 40%; /* Full viewport width */
+}
+
+.graph {
+ margin-top: 10px;
+	/*-----------here to make it transparent for the mouse effect   ----------------*/
+  background: linear-gradient(102deg, rgba(9, 41, 107, 0.1), rgba(3, 13, 67, 0.1), rgba(9, 41, 107, 0.1)); /* Add transparency to gradient */
+  backdrop-filter: blur(5px); /* Optional: adds a blur effect to make it look like frosted glass */
+
+	
+	
+  color: white;
+  padding: 10px;
+  text-align: center;
+	align-items: center;
+  
+	border: 1px solid transparent;
+	border-image: linear-gradient(to right, #030d43, #09296b, #030d43) 1;
+	
+}
+
+
+
+/* Floating Icon------------------------------------------------------------------------ */
+.menu-icon {
+  position: fixed;
+	 
+  top: 20px;
+  left: 20px;
+  width: 80px;
+  height: 80px;
+  background: url('MenuBull2Small.png') no-repeat center center / cover;
+  opacity: 0.5;
+  cursor: pointer;
+ 
+	z-index: 9999; /* Slightly lower than icon but above all other content */
+  transition: opacity 0.3s;
+}
+
+.menu-icon:hover {
+  opacity: 1;
+}
+
+/* Hidden Menu */
+.menu {
+  position: fixed;
+  top: 0;
+  left: -250px;
+  width: 250px;
+  height: 100%;
+ background: linear-gradient(1deg, rgba(3, 13, 67, 0.5), rgba(3, 13, 67, 0.5), rgba(67, 140, 227, 0.5), rgba(17, 28, 233, 0.5));
+
+            border-image: linear-gradient(1deg, #438ce3,#030d43,  #030d43 ) 1;
+  color: white;
+  display: flex;
+  flex-direction: column;
+	
+  padding: 20px;
+	z-index: 9998; /* Slightly lower than icon but above all other content */
+  transition: left 0.3s;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+	
+}
+
+.menu a {
+  color: white;
+  text-decoration: none;
+  margin: 10px 0;
+	
+}
+
+.menu a:first-child {
+  margin-top: 90px; /* Adds 80px space only before the first item */
+}
+
+.menu a:hover {
+  text-decoration: underline;
+}
+
+.menutext {
+ background-color:  #13268c;
+	color: white;
+	padding: 5px;
+	border : 1px solid black;
+	display: inline-block;
+}
+
+/*------------------------------------------------------------------------------*/
+
+
+
+.title-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background-color:  #13268c;
+  color: white;
+	width: 100vw; /* Full width */
+	 height: 90px; /* Set height to 100px */
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+/*title bar at the top*/	 
+}
+ .title {
+    display: flex; /* Makes the container a flexbox */
+    align-items: center; /* Vertically aligns image and text container */
+    justify-content: flex-start; /* Keeps content aligned to the left */
+    gap: 20px; /* Adds spacing between the image and text */
+}
+.title-text {
+    display: flex; /* Enables flexbox for the text container */
+    flex-direction: column; /* Stacks items vertically */
+    align-items: center; /* Centers items horizontally */
+    text-align: center; /* Ensures text is centered inside */
+}
+
+.title-text h1 {
+    margin: 0; /* Removes extra margin */
+    font-size: 2.5em; /* Adjust font size for the title */
+}
+
+.title-text p {
+    margin: 10px 0 0; /* Adds spacing below the title */
+    font-size: 1.2em; /* Adjust font size for the description */
+}
+.title-image {
+    width: 200px; /* Set the width of the image */
+    height: 200px; /* Set the height of the image */
+    object-fit: cover; /* Ensures the image retains its aspect ratio */
+	justify-content: flex-end;
+}
+
+
+/*--------------------------------------------------------------------------------------*/
+.tokenholder {
+    display: flex;                  /* Enables flexbox */
+    justify-content: center;  /* Distributes the items evenly with gaps in between */
+    align-items: center;            /* Centers items vertically */
+    width: 100%;                    /* Ensures the container spans the full width of the screen */
+               /* Optionally set to full height of the viewport */
+    flex-wrap: wrap;                  /* Ensures the container spans the full screen */
+}
+
+.tokens {
+    max-width: 200px;               /* Max width for each item */
+    width: 100%;                    /* Items will take up full available space within max-width */
+    max-height: 200px;              /* Maximum height for each item */
+    height: 100%;                   /* Make item fill the available height up to max-height */
+    background-color: lightblue;    /* For visibility */
+    text-align: center;             /* Centers the text horizontally */
+    display: flex;  /* Enables flexbox inside each item */
+	 flex-direction: column;     /* Stacks items vertically */
+    justify-content: center;        /* Centers content horizontally inside the item */
+    align-items: center;            /* Centers content vertically inside the item */
+    padding: 10px;                  /* Adds padding inside each item */
+    box-sizing: border-box;         /* Makes sure padding is included in the height */
+    overflow: hidden;               /* Prevents content from overflowing */
+    word-wrap: break-word;          /* Breaks long words onto the next line if needed */
+    word-break: break-word;         /* Ensures words break properly if too long */
+	 text-align: center; /* Centers both the image and the text */
+	margin: 20px;  
+	 background: linear-gradient(1deg,  #111ce9, #438ce3, #030d43,#030d43); /* Gradient from blue to cyan */
+ border-image: linear-gradient(1deg, #030d43,  #030d43,#438ce3 ) 1;
+	
+}
+
+@media (max-width: 800px) {
+    .tokenholder {
+        flex-direction: column;      /* Stack items vertically */
+        justify-content: center;     /* Centers items vertically within the container */
+    }
+
+    .tokens {
+          max-height: 150px;           /* Adjust max-height for stacked items */
+        margin-bottom: 10px;         /* Adds space between stacked items */
+    }
+}
+/*-----------Token images, ethereum binance Polygon Avalanche -----------------*/
+
+
+.background-Ethereum {
+    width: 100%; /* Width of the div */
+    height: 100px; /* Height of the div */
+    background-image: url("CoinEth.png"); /* Path to your image */
+	background-size: 50%; 
+    background-position: center; /* Centers the image */
+    background-repeat: no-repeat; /* Prevents the image from repeating */
+}
+.background-Binance {
+    width: 100%; /* Width of the div */
+    height: 100px; /* Height of the div */
+    background-image: url("Coinbinance.png"); /* Path to your image */
+	background-size: 50%; 
+    background-position: center; /* Centers the image */
+    background-repeat: no-repeat; /* Prevents the image from repeating */
+}
+.background-Polygon {
+    width: 100%; /* Width of the div */
+    height: 100px; /* Height of the div */
+    background-image: url(CoinPolygon.png); /* Path to your image */
+	background-size: 50%; 
+    background-position: center; /* Centers the image */
+    background-repeat: no-repeat; /* Prevents the image from repeating */
+}
+.background-Avalanche {
+    width: 100%; /* Width of the div */
+    height: 100px; /* Height of the div */
+    background-image: url("Coinavalanche.png"); /* Path to your image */
+	background-size: 50%; 
+    background-position: center; /* Centers the image */
+    background-repeat: no-repeat; /* Prevents the image from repeating */
+}
+
+
+
+/*----------------------------------------------------------------------------------------*/
+
+
+
+
+ .key-points {
+            display: flex;
+            justify-content:  center;
+            gap: 20px;
+            width: 100%;
+            padding: 20px 0;
+	 		  flex-wrap: wrap; /* Enable wrapping for responsiveness */
+	 
+        }
+ .key-point {
+            flex: 0 1;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+          	min-width: 300px; 
+			max-width: 300px;
+	  		background: linear-gradient(1deg,  #030d43,  #030d43, #438ce3 , #111ce9   ); /* Gradient from blue to cyan */
+            border-image: linear-gradient(1deg, #438ce3,#030d43,  #030d43 ) 1;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+	 	    text-align: center; /* Center the text */
+        }
+ .key-point h3 {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+            color: #1B245B; /* Blue color for the titles */
+        }
+
+/* -----------------------------dashboard-------------------------*/
+
+
+.dashboard-container {
+    max-width: 1200px;
+    margin: auto;
+    padding: 20px;
+    background-color: rgba(17, 28, 233, 0.1);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+	
+	
+	 margin-bottom: 2rem;
+	
+}
+
+h1 {
+    text-align: center;
+    color: #00bcd4;
+}
+
+.token-sections {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.token-overview, .puduto-section {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    padding: 20px;
+    min-width: 300px;
+    box-sizing: border-box;
+}
+
+.token-overview {
+    max-width: 800px;
+	background-color: rgba(17, 28, 233, 0.2);
+	
+	box-shadow: 
+    inset 1px 1px 5px rgba(255, 255, 255, 0.6),  /* Light source */
+    inset -1px -1px 5px rgba(0, 0, 0, 0.3);  /* Shadow */
+}
+
+.puduto-section {
+    max-width: 400px;
+}
+
+/* Make the PUDUTO section stack vertically */
+.puduto-section .info-box {
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: #f4f6f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.puduto-section .cta-section {
+    display: flex;
+    flex-direction: column; /* Stack buttons vertically */
+    gap: 10px;
+    margin-top: 15px;
+}
+
+
+
+h2 {
+    color: #00bcd4;
+}
+
+.token-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.stat-box {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 15px;
+    border-radius: 8px;
+   border: 1px solid #00d9ff;
+	min-width: 300px;
+	
+	
+}
+
+ta-section {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap; /* For responsive layout */
+}
+
+.investment-summary {
+    border: 1px solid #00d9ff;
+    padding: 20px;
+    border-radius: 8px;
+    background: rgba(0, 217, 255, 0.1); /* Light transparent cyan */
+    max-width: 400px;
+    flex: 1;
+}
+
+.investment-summary h3 {
+    color: #00d9ff;
+    margin-bottom: 15px;
+}
+
+.investment-summary p {
+    margin: 8px 0;
+    color: #fff;
+    font-size: 16px;
+}
+
+.cta-btn {
+    padding: 15px;
+    font-size: 16px;
+    background-color: #01d9ff;
+    color: #fff;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    text-align: center;
+    transition: background-color 0.3s ease;
+}
+
+.cta-btn:hover {
+    background-color: #CB304C;
+}
+
+
+.tooltip {
+    position: relative;
+    cursor: pointer;
+    color: #00d9ff;
+    border-bottom: 1px dotted #00d9ff;
+}
+
+/* Tooltip Hover Effect */
+.tooltip::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 120%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    padding: 8px;
+    border-radius: 5px;
+    white-space: nowrap;
+    font-size: 12px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease;
+    z-index: 100;
+}
+
+/* Show Tooltip on Hover */
+.tooltip:hover::after {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Button Hover Tooltip */
+.cta-btn[data-tooltip]::after,
+.sell-btn[data-tooltip]::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 120%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    padding: 8px;
+    border-radius: 5px;
+    white-space: nowrap;
+    font-size: 12px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease;
+    z-index: 100;
+}
+
+.cta-btn:hover::after,
+.sell-btn:hover::after {
+    opacity: 1;
+    visibility: visible;
+}
+
+
+.investment-pool {
+    margin-top: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    border-radius: 8px;
+	width: 100%;
+	background-color: rgba(17, 28, 233, 0.2);
+	
+	box-shadow: 
+    inset 1px 1px 5px rgba(255, 255, 255, 0.6),  /* Light source */
+    inset -1px -1px 5px rgba(0, 0, 0, 0.3);  /* Shadow */
+}
+
+
+.blockchain-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.blockchain-balance {
+    flex: 1;
+    min-width: 220px;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+   border: 1px solid #00d9ff;
+}
+
+/* Info Boxes */
+.info-box {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid #00d9ff;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+	
+	
+}
+
+/* Headings */
+.info-box h3 {
+    color: #00d9ff;
+    margin-bottom: 15px;
+}
+
+/* Tooltip */
+.tooltip {
+    position: relative;
+    cursor: pointer;
+    color: #00d9ff;
+    border-bottom: 1px dotted #00d9ff;
+}
+
+/* Tooltip Hover Effect */
+.tooltip::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 120%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    padding: 8px;
+    border-radius: 5px;
+    white-space: nowrap;
+    font-size: 12px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease;
+    z-index: 100;
+}
+
+.tooltip:hover::after {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Buttons */
+.cta-section {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+    justify-content: space-between;
+}
+
+.cta-btn.small-btn {
+    flex: 1;
+    padding: 10px;
+    font-size: 14px;
+    background-color: #4261F1;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+	 box-shadow: inset 1px 1px 3px rgba(255, 255, 255, 0.7),
+              inset -1px -1px 3px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+}
+
+.cta-btn.small-btn:hover {
+    background-color: #009fcb;
+}
+
+.claim-btn {
+    background-color: #ff6b6b;
+}
+
+.claim-btn:hover {
+    background-color: #e35757;
+}
+/* Grid Layout for Info Boxes */
+.info-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: space-between;
+}
+
+/* Box Sizing */
+.info-box {
+    flex: 1 1 calc(50% - 10px); /* Two boxes per row */
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid #00d9ff;
+    padding: 20px;
+    border-radius: 8px;
+    min-width: 300px;
+}
+
+/* Center Buy Button */
+.buy-btn-section {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.cta-btn.large-btn {
+    padding: 12px 24px;
+    font-size: 16px;
+    background-color: #4261F1;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.cta-btn.large-btn:hover {
+    background-color: #009fcb;
+}
+
+
+@media (max-width: 768px) {
+    .token-overview, .puduto-section {
+        max-width: 100%;
+        min-width: 100%;
+    }
+
+    .blockchain-balance {
+        min-width: 100%;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*--------------------------details about details---------------------*/
+.detail-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    max-width: 1200px;
+    width: 100%;
+    padding: 20px;
+    margin: auto;
+    border: 2px solid #438ce3;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+	 margin-bottom: 2rem;
+}
+
+.details-images {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    width: 100%;
+}
+
+.details-detail {
+    flex: 1 1 400px; /* Grow/shrink between 400px and available space */
+    max-width: 550px;
+    min-width: 400px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+}
+
+.details-detail img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+/* General Styles */
+.details-point {
+    padding: 20px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.2); /* Slight transparency */
+    max-width: 1200px;
+    margin: 30px auto;
+    color: white;
+    text-align: left;
+    font-family: 'Arial', sans-serif;
+}
+
+/* Highlight Color for Key Points */
+.highlight-text {
+    color: #00FFFF; /* Light Cyan color for emphasis */
+}
+
+/* Callout Box Styling */
+.callout {
+    background-color: rgba(0, 0, 0, 0.4); /* Slight transparency */
+    padding: 20px;
+    border-radius: 8px;
+    margin-top: 20px;
+}
+
+.callout h3 {
+    font-size: 1.5em;
+    color: #00FFFF; /* Light Cyan color */
+}
+
+/* List Styling */
+.callout ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.callout li {
+    margin-bottom: 10px;
+    font-size: 1.1em;
+}
+
+/* Button Styling */
+.cta-btn {
+    background-color: #00FFFF; /* Light Cyan background */
+    color: black;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.2em;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+.cta-btn:hover {
+    background-color: #00CED1; /* Darker Cyan when hovered */
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 768px) {
+    .details-point {
+        padding: 15px;
+    }
+
+    .cta-btn {
+        width: 100%;
+        padding: 20px;
+    }
+}
+
+
+
+
+
+
+
+
+
+/*-----------------------------connect button --------------*/
+/* Button Styles */
+.connect-wallet {
+  position: relative; /* To position the glimmer over the button */
+  background-color: #09296b;
+  color: white; /* Ensure text is white */
+  border: 2px solid yellow;
+  padding: 10px 20px;
+  border-radius: 25px;
+  cursor: pointer;
+  overflow: hidden; /* To hide the glimmer when it's outside the button */
+  text-align: center; /* Center the text */
+  font-size: 1.2rem; /* Adjust font size if needed */
+  font-weight: bold;
+  z-index: 2; /* Ensure the text is above the glimmer */
+}
+
+/* Glimmer effect */
+.connect-wallet::after {
+  content: '';
+  position: absolute;
+  top: -100%;
+  left: -100%;
+  width: 200%;
+  height: 50%;
+ background: linear-gradient(45deg, rgba(255, 255, 0, 0.3), rgba(255, 255, 0, 0.8), rgba(255, 255, 0, 0.3));
+
+  animation: glimmer 8s infinite;
+  transform: rotate(70deg); /* Angle of the light glimmer */
+  z-index: 1; /* Ensures the glimmer stays below the text */
+}
+
+/* Keyframes for glimmer animation */
+@keyframes glimmer {
+  0% {
+    left: -100%; /* Start the glimmer off screen */
+  }
+  50% {
+    left: 100%; /* Move the glimmer all the way across */
+  }
+  100% {
+    left: -100%; /* Loop back to start */
+  }
+}
+
+/* Button hover effect */
+.connect-wallet:hover {
+  background-color: #3f7fc9;
+  border-color: #ffd700;
+}
+
+/* Ensure the text stays on top of the glimmer */
+.connect-wallet span {
+  position: relative; /* Ensure the text is above the glimmer */
+  z-index: 2;
+}
+
+/*--------------------------------------------------------------*/
+/* Container */
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  padding: 20px;
+  gap: 10px;
+}
+
+
+/* Media query for narrow screens (adjust width as needed) */
+@media (max-width: 768px) {
+  .graph.width50 {
+    width: 100%; /* Full width on smaller screens */
+    margin-left: 0; /* Remove left margin for small screens */
+    margin-right: 0; /* Remove right margin for small screens */
+  }
+}
+
+/*----------------------------Slider stuff ---------------------------------*/
+.swiper {
+    width: 80%;
+    max-width: 1200px;
+	max-height: 200px;
+    margin: auto;
+    overflow: hidden;
+    border-radius: 10px;
+    border: 0px solid #ddd;
+}
+
+.swiper-slide {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-family: Arial, sans-serif;
+    cursor: pointer;
+    background: #f4f4f4;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.swiper-slide:hover {
+    transform: scale(1.05);
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.swiper-slide img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 5px;
+}
+
+.swiper-slide p {
+    margin-top: 10px;
+    font-size: 1em;
+    color: #333;
+}
+  .swiper-slide img {
+        width: 100%;        /* Makes the image stretch across the slide */
+    height: auto;       /* Keeps the aspect ratio intact */
+    max-height: 200px;   /* Ensures the image doesn't exceed the container height */
+    object-fit: contain; /* Ensures the image fits inside the container without cropping */
+}
+
+/* reveal stuff -------------------------------------------------------------*/
+
+.mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url('BackgroundImage.png') no-repeat center center / cover; /* Background image */
+  background-color: rgba(3, 13, 67, 0.9);/* Initial background color (darkened overlay) */
+  transition: background 0.1s ease-out; /* Smooth transition for background change */
+  z-index: 1; /* Lower than .content */
+}
+
+.content {
+	display: flex;
+  position: relative;
+  z-index: 2; /* Higher than .mask */
+ /* text-align: center;*/
+	align-items:  flex-start;
+	 justify-content: center;
+  color: white;
+	flex-direction: column;
+	padding: 20px;
+	padding-right: 20px;
+	padding-left: 20px;
+	
+}
+
+h1 {
+  font-size: 3rem;
+  margin-bottom: 20px;
+}
+
+button {
+  padding: 10px 20px;
+  font-size: 1.2rem;
+  background-color: #030d43;
+  color: #030d43;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #3f7fc9;
+}
+
+@media (max-width: 768px) {
+    .key-points {
+        flex-direction: column; /* Stack items vertically */
+        align-items: center; /* Center items within the column */
+        gap: 20px; /* Adjust gap between stacked items */
+    }
+	
