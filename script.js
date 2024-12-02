@@ -1,3 +1,10 @@
+let web3Modal;
+let provider;
+let selectedAccount;
+let web3;
+
+
+
 /*-------------------------------fancy pants circle thingy------------------*/
 const mask = document.querySelector('.mask');
 
@@ -48,28 +55,22 @@ function toggleMenu() {
 }
 
 /*----------------------- Connect wallet ------------------------------------*/
-window.addEventListener('load', async () => {
-  if (typeof window.ethereum !== 'undefined') {
-    console.log('MetaMask is detected.');
 
-    const connectWalletButton = document.getElementById('connectWalletButton');
-    const walletAddressSpan = document.getElementById('walletAddress');
+const getWeb3 = async () => {
+  return new Promise(async (resolve, reject) => {
+    const web3 = new Web3(window.ethereum) 
 
-    connectWalletButton.addEventListener('click', async () => {
-      try {
-        // Request wallet connection
-        const provider = new ethers.providers.Web3Provider(window.ethereum);
-        await provider.send('eth_requestAccounts', []);
-        const signer = provider.getSigner();
+    try {
+      await window.ethereum.request({ method: "eth_requestAccounts"})
+      resolve(web3)
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
 
-        // Get wallet address and display it
-        const address = await signer.getAddress();
-        walletAddressSpan.textContent = `${address.slice(0, 6)}...${address.slice(-4)}`;
-      } catch (error) {
-        console.error('Error connecting to wallet:', error);
-      }
-    });
-  } else {
-    alert('Please install MetaMask to use this feature.');
-  }
-});
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("connectWalletButton").addEventListener("click", async () => {
+    const web3 = await getWeb3()
+  })
+})

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connect MetaMask</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .connect-wallet {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .connect-wallet:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <button class="connect-wallet">
+        <span>Connect Wallet</span>
+    </button>
+
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.6.1/dist/web3.min.js"></script>
+
+    <script>
+        // Check for Ethereum provider (MetaMask)
+        if (typeof window.ethereum !== 'undefined') {
+            console.log("MetaMask is installed");
+        } else {
+            console.log("Please install MetaMask");
+        }
+
+        // Function to connect wallet using MetaMask
+        async function connectWallet() {
+            if (typeof window.ethereum !== 'undefined') {
+                try {
+                    // Request user's account from MetaMask
+                    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+
+                    if (accounts && accounts.length > 0) {
+                        // Show the first account in the button text
+                        const userAddress = accounts[0];
+                        document.querySelector('.connect-wallet span').innerText = userAddress;
+                        console.log("Connected wallet address:", userAddress);
+                    } else {
+                        console.error("No accounts found");
+                    }
+                } catch (error) {
+                    // Handle any errors
+                    console.error("Error connecting to MetaMask:", error.message);
+                    if (error.code === 4001) {
+                        // User rejected the request
+                        alert("User denied account access");
+                    } else {
+                        alert("An error occurred while connecting to MetaMask");
+                    }
+                }
+            } else {
+                alert("Please install MetaMask!");
+            }
+        }
+
+        // Add event listener to button
+        document.querySelector('.connect-wallet').addEventListener('click', connectWallet);
+    </script>
+</body>
+</html>
