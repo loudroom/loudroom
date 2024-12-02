@@ -17,6 +17,9 @@ body {
 html {
   scroll-behavior: smooth;
 }
+[hidden]{
+    display: none;
+}
 
 .width100 {
   display: flex;

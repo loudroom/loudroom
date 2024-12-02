@@ -1,3 +1,5 @@
+const { default: Web3 } = require("web3");
+
 let web3Modal;
 let provider;
 let selectedAccount;
@@ -58,19 +60,37 @@ function toggleMenu() {
 
 const getWeb3 = async () => {
   return new Promise(async (resolve, reject) => {
-    const web3 = new Web3(window.ethereum) 
+    const web3 = new Web3(window.ethereum); // Initialize Web3
 
     try {
-      await window.ethereum.request({ method: "eth_requestAccounts"})
-      resolve(web3)
+      // Request wallet connection
+      await window.ethereum.request({ method: "eth_requestAccounts" });
+      resolve(web3);
     } catch (error) {
-      reject(error)
+      reject(error);
     }
-  })
-}
+  });
+};
 
 document.addEventListener("DOMContentLoaded", () => {
-  document.getElementById("connectWalletButton").addEventListener("click", async () => {
-    const web3 = await getWeb3()
-  })
-})
+  document.getElementById("connectWalletButton").addEventListener("click", async (target) => {
+    try {
+      const web3 = await getWeb3();  // Get Web3 instance
+      const walletAddress = await web3.eth.getAccounts();  // Fetch wallet addresses
+      const walletBalanceInWei = await web3.eth.getBalance(walletAddress[0]); // Get balance in Wei
+      const walletBalanceInEth = Web3.utils.fromWei(walletBalanceInWei, "ether");  // Convert balance to ETH
+
+      // Hide the button after connection
+      target.setAttribute("hidden", "hidden");
+
+      // Update the wallet address and balance in the UI
+      document.getElementById("wallet_address").innerText = walletAddress[0];  // Display first address
+      document.getElementById("wallet_balance").innerText = walletBalanceInEth;  // Display balance
+
+      // Reveal wallet info section
+      document.getElementById("wallet_info").removeAttribute("hidden");
+    } catch (error) {
+      console.error("Error connecting wallet:", error);
+    }
+  });
+});
