@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Reveal Background</title>
+  <title>Pump and Dump Trading</title>
 	  <link rel="stylesheet" href="flexbox-styles.css">
-	  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.css">
+	  <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
+	  <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+	  <script src="https://cdn.jsdelivr.net/npm/web3@1.8.1/dist/web3.min.js"></script>
 </head>
 <body>
-	<script src="https://cdn.jsdelivr.net/npm/web3modal@1.9.6/dist/index.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/web3@1.6.1/dist/web3.min.js"></script>
 	<!------------------------menu code ---------------------->
 	<div class="menu-icon" onclick="toggleMenu()"></div>
 
@@ -40,18 +40,33 @@
 	  
 	  <div id="HOME" class="title-bar">
 		 
-		  <div class="logo">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;           PUMP & DUMP TRADING   
-			<section id="wallet_info">
-				<h1 id="wallet_address"></h1>
-				
-			  </section>
+		<div class="logo">
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			PUMP & DUMP TRADING
 		</div>
-		  <button id="connectWalletButton" class="connect-wallet">
-			<span id="walletAddress">Connect Wallet</span>
-		  </button>
-		  <h2>Bal: <span id="wallet_balance"></span></h2>
+		
+		
+
+		<div class="wallet-info">
+			<div id="wallet-address"></div> <!-- Display wallet address -->
+			
+			<!-- Separate fields for each blockchain -->
+			<div id="eth-balance" class="blockchain-balance"></div> <!-- Ethereum -->
+			<div id="bnb-balance" class="blockchain-balance"></div> <!-- Binance Smart Chain -->
+			<div id="polygon-balance" class="blockchain-balance"></div> <!-- Polygon -->
+			<div id="avax-balance" class="blockchain-balance"></div> <!-- Avalanche -->
+		</div>
+		
+		
+		<button class="connect-wallet">
+			<span>Connect Wallet</span>
+		</button>
   	    </div>
 	
+
+
+
+
 		<div class="width100 graph">
 			
 			
@@ -437,10 +452,5 @@
 	
 <script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
 <script src="script.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/web3modal@1.9.6/dist/index.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/web3@1.6.1/dist/web3.min.js"></script>
-
-
-
 </body>
 </html>
