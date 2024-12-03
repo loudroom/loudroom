@@ -117,7 +117,7 @@
       display: inline-block;
   }
   #menu {
-    position: absolute;
+    position: fixed;
     left: -250px; /* Hidden by default */
     transition: left 0.3s ease;
   }
@@ -134,7 +134,7 @@
     background-color:  #13268c;
     color: white;
       width: 100vw; /* Full width */
-       height: 500px; /* Set height to 100px */
+       height: 90px; /* Set height to 100px */
   }
   
   .logo {
@@ -172,7 +172,7 @@
   }
 
 
-  /*------------------------ connected wallet details ---------------------------
+  /*------------------------ connected wallet details ---------------------------*/
 
   .wallet-info {
     display: flex;
@@ -207,15 +207,22 @@
       display: flex;                  /* Enables flexbox */
       justify-content: center;  /* Distributes the items evenly with gaps in between */
       align-items: center;            /* Centers items vertically */
-      width: 100%;                    /* Ensures the container spans the full width of the screen */
-                 /* Optionally set to full height of the viewport */
+      width: 1200px;                    /* Ensures the container spans the full width of the screen */
+      padding: 5px;
+      margin: 10px;  
       flex-wrap: wrap;                  /* Ensures the container spans the full screen */
+      border: 1px;
+      background: linear-gradient(1deg,  #111ce9, #438ce3, #030d43,#030d43); /* Gradient from blue to cyan */
+      border-image: linear-gradient(1deg, #030d43,  #030d43,#438ce3 ) 1;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
   }
   
   .tokens {
       max-width: 200px;               /* Max width for each item */
       width: 100%;                    /* Items will take up full available space within max-width */
-      max-height: 200px;              /* Maximum height for each item */
+      max-height: 200px;    
+      min-height: 180px;          /* Maximum height for each item */
       height: 100%;                   /* Make item fill the available height up to max-height */
       background-color: lightblue;    /* For visibility */
       text-align: center;             /* Centers the text horizontally */
@@ -234,6 +241,16 @@
    border-image: linear-gradient(1deg, #030d43,  #030d43,#438ce3 ) 1;
       
   }
+  .blockchain-balance {
+    .blockchain-balance {
+        display: inline-block;
+        padding: 5px;
+        background-color: #f0f0f0;
+        width: 100%; /* Ensures it doesn't overflow */
+        font-size: 14px;
+        word-wrap: break-word; /* Allow wrapping if text overflows */
+    }
+}
   
   @media (max-width: 800px) {
       .tokenholder {
@@ -244,7 +261,16 @@
       .tokens {
             max-height: 150px;           /* Adjust max-height for stacked items */
           margin-bottom: 10px;         /* Adds space between stacked items */
+          width: 100%; /* Allow tokens to fill the container on smaller screens */
       }
+      .tokens p {
+        margin: 5px 0;
+        font-size: 16px;
+        font-weight: bold;
+    }
+      .blockchain-balance {
+        font-size: 12px; /* Make text smaller on smaller screens */
+    }
   }
   /*-----------Token images, ethereum binance Polygon Avalanche -----------------*/
   

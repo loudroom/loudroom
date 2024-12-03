@@ -38,6 +38,22 @@ const swiper = new Swiper('.swiper', {
 });
 
 /*-------------------------------menu-----------------------------------*/
+function toggleMenu() {
+  const menu = document.getElementById('menu');
+  if (menu.style.left === '0px') {
+    menu.style.left = '-250px';
+  } else {
+    menu.style.left = '0px';
+  }
+}
+
+
+/*----------------------------- Connect wallet -----------------------*/
+/*----------------------------- Connect wallet -----------------------*/
+
+
+
+
 if (window.ethereum) {
   const web3 = new Web3(window.ethereum);
 
@@ -50,92 +66,117 @@ if (window.ethereum) {
 
   // This function will update the UI with wallet address and all balances
   async function updateNetworkInfo() {
-      const accounts = await web3.eth.requestAccounts(); // Request accounts
-      const walletAddress = accounts[0]; // Get the first wallet address
-      walletAddressElement.textContent = `Wallet Address: ${walletAddress}`;
+    const accounts = await web3.eth.requestAccounts(); // Request accounts
+    const walletAddress = accounts[0]; // Get the first wallet address
+    walletAddressElement.textContent = `Wallet Address: ${walletAddress}`;
 
-      const balances = await getBalances(walletAddress); // Get balances for all networks
-      
-      // Update the UI with balances for all networks
-      updateBalanceDisplay(balances);
+    console.log("Fetching balances for wallet:", walletAddress); // Debugging
+
+    // Fetch balances for native tokens
+    const balances = await getBalances(walletAddress);
+
+    console.log("Native token balances:", balances); // Debugging
+
+    // Update the UI with balances for all networks
+    updateBalanceDisplay(balances);
+
+    // Update the button text to show the connected network
+    await updateConnectButtonText();
   }
 
-  // Function to get the balance for each blockchain (all networks)
+  // Function to get the balance for each blockchain (native tokens)
   async function getBalances(walletAddress) {
-      let ethBalance, bnbBalance, polygonBalance, avaxBalance;
+    let ethBalance, bnbBalance, polygonBalance, avaxBalance;
 
-      // Ethereum Network (ETH)
-      const ethBalanceWei = await web3.eth.getBalance(walletAddress);
-      ethBalance = web3.utils.fromWei(ethBalanceWei, 'ether');
-      
-      // Binance Smart Chain (BNB)
-      const bnbWeb3 = new Web3(new Web3.providers.HttpProvider('https://bsc-dataseed.binance.org/'));
-      const bnbBalanceWei = await bnbWeb3.eth.getBalance(walletAddress);
-      bnbBalance = web3.utils.fromWei(bnbBalanceWei, 'ether');
+    // Ethereum Network (ETH)
+    const ethBalanceWei = await web3.eth.getBalance(walletAddress);
+    ethBalance = web3.utils.fromWei(ethBalanceWei, 'ether');
+    ethBalance = parseFloat(ethBalance).toFixed(4);
 
-      // Polygon Network (MATIC)
-      const polygonWeb3 = new Web3(new Web3.providers.HttpProvider('https://polygon-rpc.com/'));
-      const polygonBalanceWei = await polygonWeb3.eth.getBalance(walletAddress);
-      polygonBalance = web3.utils.fromWei(polygonBalanceWei, 'ether');
+    // Binance Smart Chain (BNB)
+    const bnbWeb3 = new Web3(new Web3.providers.HttpProvider('https://bsc-dataseed.binance.org/'));
+    const bnbBalanceWei = await bnbWeb3.eth.getBalance(walletAddress);
+    bnbBalance = web3.utils.fromWei(bnbBalanceWei, 'ether');
+    bnbBalance = parseFloat(bnbBalance).toFixed(4);
 
-      // Avalanche Network (AVAX)
-      const avaxWeb3 = new Web3(new Web3.providers.HttpProvider('https://api.avax.network/ext/bc/C/rpc'));
-      const avaxBalanceWei = await avaxWeb3.eth.getBalance(walletAddress);
-      avaxBalance = web3.utils.fromWei(avaxBalanceWei, 'ether');
+    // Polygon Network (MATIC)
+    const polygonWeb3 = new Web3(new Web3.providers.HttpProvider('https://polygon-rpc.com/'));
+    const polygonBalanceWei = await polygonWeb3.eth.getBalance(walletAddress);
+    polygonBalance = web3.utils.fromWei(polygonBalanceWei, 'ether');
+    polygonBalance = parseFloat(polygonBalance).toFixed(4);
 
-      return {
-          eth: ethBalance || 0,
-          bnb: bnbBalance || 0,
-          polygon: polygonBalance || 0,
-          avax: avaxBalance || 0
-      };
+    // Avalanche Network (AVAX)
+    const avaxWeb3 = new Web3(new Web3.providers.HttpProvider('https://api.avax.network/ext/bc/C/rpc'));
+    const avaxBalanceWei = await avaxWeb3.eth.getBalance(walletAddress);
+    avaxBalance = web3.utils.fromWei(avaxBalanceWei, 'ether');
+    avaxBalance = parseFloat(avaxBalance).toFixed(4);
+
+    return {
+      eth: ethBalance || 0,
+      bnb: bnbBalance || 0,
+      polygon: polygonBalance || 0,
+      avax: avaxBalance || 0
+    };
   }
 
-  // Function to update the UI with the balances for each network
+  // Function to update the UI with the balances for native tokens
   function updateBalanceDisplay(balances) {
-      // Display Ethereum balance
-      ethBalanceElement.innerHTML = `
-          <img src="https://upload.wikimedia.org/wikipedia/commons/0/05/Ethereum_logo_2014.svg" alt="Ethereum Logo" width="30" />
-          ETH: ${balances.eth}
-      `;
-
-      // Display Binance Smart Chain balance
-      bnbBalanceElement.innerHTML = `
-          <img src="https://cryptologos.cc/logos/binance-coin-bnb-logo.svg" alt="Binance Smart Chain Logo" width="30" />
-          BNB: ${balances.bnb}
-      `;
-
-      // Display Polygon balance
-      polygonBalanceElement.innerHTML = `
-          <img src="https://upload.wikimedia.org/wikipedia/commons/7/75/Polygon_logo.png" alt="Polygon Logo" width="30" />
-          MATIC: ${balances.polygon}
-      `;
-
-      // Display Avalanche balance
-      avaxBalanceElement.innerHTML = `
-          <img src="https://cryptologos.cc/logos/avalanche-avax-logo.svg" alt="Avalanche Logo" width="30" />
-          AVAX: ${balances.avax}
-      `;
+    // Display Ethereum native balance
+    ethBalanceElement.innerHTML = `ETH: ${balances.eth}`;
+    // Display Binance Smart Chain native balance
+    bnbBalanceElement.innerHTML = `BNB: ${balances.bnb}`;
+    // Display Polygon native balance
+    polygonBalanceElement.innerHTML = `MATIC: ${balances.polygon}`;
+    // Display Avalanche native balance
+    avaxBalanceElement.innerHTML = `AVAX: ${balances.avax}`;
   }
 
-  // Handle wallet connection
-  connectButton.addEventListener("click", async () => {
-      try {
-          await web3.eth.requestAccounts(); // Request accounts
-          updateNetworkInfo(); // Update wallet address and all balances
-      } catch (error) {
-          console.error("User denied wallet connection", error);
-      }
-  });
+  // Function to get the connected network's name and update the button text
+  async function updateConnectButtonText() {
+    const networkId = await web3.eth.net.getId();
+    let networkName = '';
 
-  // Update info when the page loads
-  window.addEventListener("load", async () => {
-      // Check if user is already connected and update balances
-      if (web3.eth.accounts.length > 0) {
-          updateNetworkInfo();
-      }
+    // Check network and set name accordingly
+    switch (networkId) {
+      case 1:
+        networkName = 'Ethereum';
+        break;
+      case 56:
+        networkName = 'Binance Smart Chain';
+        break;
+      case 137:
+        networkName = 'Polygon';
+        break;
+      case 43114:
+        networkName = 'Avalanche';
+        break;
+      case 250:
+        networkName = 'Fantom';
+        break;
+      case 42161:
+        networkName = 'Arbitrum';
+        break;
+      case 100:
+        networkName = 'xDai';
+        break;
+      case 128:
+        networkName = 'HECO';
+        break;
+      case 42220:
+        networkName = 'Celo';
+        break;
+      default:
+        networkName = `Unknown network (ID: ${networkId})`;
+    }
+
+    // Update the connect button text with the network name
+    connectButton.textContent = `Connected to ${networkName}`;
+  }
+
+  // Event listener for the connect wallet button
+  connectButton.addEventListener('click', async () => {
+    await updateNetworkInfo(); // Fetch and display network info
   });
 } else {
-  console.error("No Ethereum provider detected. Please install MetaMask.");
+  console.log('Ethereum provider not found. Please install MetaMask.');
 }
-

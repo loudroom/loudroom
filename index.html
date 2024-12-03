@@ -48,13 +48,15 @@
 		
 
 		<div class="wallet-info">
-			<div id="wallet-address"></div> <!-- Display wallet address -->
-			
-			<!-- Separate fields for each blockchain -->
-			<div id="eth-balance" class="blockchain-balance"></div> <!-- Ethereum -->
-			<div id="bnb-balance" class="blockchain-balance"></div> <!-- Binance Smart Chain -->
-			<div id="polygon-balance" class="blockchain-balance"></div> <!-- Polygon -->
-			<div id="avax-balance" class="blockchain-balance"></div> <!-- Avalanche -->
+		<!--	<div id="wallet-address"></div> --> <!-- Display wallet address -->
+
+					<!-- Native token balances -->
+					<!--	<div id="eth-balance" class="blockchain-balance"></div> --><!-- Ethereum -->
+					<!--	<div id="bnb-balance" class="blockchain-balance"></div> --> <!-- Binance Smart Chain -->
+					<!--	<div id="polygon-balance" class="blockchain-balance"></div> --> <!-- Polygon -->
+					<!--	<div id="avax-balance" class="blockchain-balance"></div> --><!-- Avalanche -->
+
+
 		</div>
 		
 		
@@ -111,28 +113,36 @@
 					 
 		</div>			 
 			
+		
 			<div class="tokenholder">
-				<div class="tokens">
-   					 <img src="CoinEth.png" alt="Ethereum" style="width: 50%; height: auto;">
-					<p>Ethereum</p>
-				</div>
-				<div class="tokens">
-   					 <img src="CoinBinance.png" alt="Binance" style="width: 50%; height: auto;">
-					<p>Binance</p>
-				</div>
-				<div class="tokens">
-   					 <img src="CoinPolygon.png" alt="Polygon" style="width: 50%; height: auto;">
-					<p>Polygon</p>
-				</div>
-				<div class="tokens">
-   					 <img src="CoinAvalanche.png" alt="Avalanche" style="width: 50%; height: auto;">
-					<p>Avalanche</p>
-				</div>
+				<div id="wallet-address"></div> 	
+				<div class="tokenholder">
+					<div class="tokens">
+						<img src="CoinEth.png" alt="Ethereum" style="width: 50%; height: auto;">
+						<p>Ethereum</p>
+						<div id="eth-balance" class="blockchain-balance"></div> <!-- Ethereum -->
+					</div>
+					<div class="tokens">
+						<img src="CoinBinance.png" alt="Binance" style="width: 50%; height: auto;">
+						<p>Binance</p>
+						<div id="bnb-balance" class="blockchain-balance"></div> <!-- Binance Smart Chain -->
+					</div>
+					<div class="tokens">
+						<img src="CoinPolygon.png" alt="Polygon" style="width: 50%; height: auto;">
+						<p>Polygon</p>
+						<div id="polygon-balance" class="blockchain-balance"></div> <!-- Polygon -->
+					</div>
+					<div class="tokens">
+						<img src="CoinAvalanche.png" alt="Avalanche" style="width: 50%; height: auto;">
+						<p>Avalanche</p>
+						<div id="avax-balance" class="blockchain-balance"></div> <!-- Avalanche -->
+					</div>
 			</div>
+			
 	
-	</div>
+		</div>
 			
-			
+		
         <!-- Key Points Section -->
         <div class="key-points">
             <!-- Pre-Sale Opportunities -->
