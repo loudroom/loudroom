@@ -239,6 +239,7 @@
       margin: 20px;  
        background: linear-gradient(1deg,  #111ce9, #438ce3, #030d43,#030d43); /* Gradient from blue to cyan */
    border-image: linear-gradient(1deg, #030d43,  #030d43,#438ce3 ) 1;
+   border-radius: 12px;
       
   }
   .blockchain-balance {
