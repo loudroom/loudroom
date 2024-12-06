@@ -186,3 +186,43 @@ document.addEventListener('DOMContentLoaded', () => {
 //buy puduto button
 //--------------------------------------------
 
+  // This function runs when the "Buy PuDuTo Tokens" button is clicked
+  document.getElementById('buy-btn').addEventListener('click', async () => {
+    // Initialize Web3 and the contract inside the button click event
+    const web3 = new Web3(window.ethereum);
+
+    // Define contract ABI and address (replace with your actual values)
+    const contractABI = [
+        // Add the contract ABI here (from Remix or Hardhat)
+    ];
+    const contractAddress = '0xYourContractAddress';  // Replace with your contract's address
+
+    const contract = new web3.eth.Contract(contractABI, contractAddress);
+
+    // Get the input value (amount of BNB to buy tokens)
+    const amount = document.getElementById('amountToBuy').value;
+
+    // Validate the amount input
+    if (!amount || amount <= 0) {
+        alert("Please enter a valid amount.");
+        return;
+    }
+
+    // Get the connected wallet address
+    const accounts = await web3.eth.getAccounts();
+
+    // Convert the BNB amount to Wei (the smallest unit of Ether/Binance Coin)
+    const amountToSend = web3.utils.toWei(amount, 'ether');
+
+    // Call the buyWithBNB function from your smart contract
+    try {
+        await contract.methods.buyWithBNB().send({
+            from: accounts[0],
+            value: amountToSend  // The amount of BNB sent with the transaction
+        });
+        alert('Purchase Successful!');
+    } catch (error) {
+        console.error(error);
+        alert('Transaction failed. Please try again.');
+    }
+});
