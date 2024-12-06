@@ -710,7 +710,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       ]
     ];
-    const contractAddress = '0x84a05F6dB71Ee3753029D990539c994Cd943A158';  // Replace with your contract's address
+    const contractAddress = "0x84a05F6dB71Ee3753029D990539c994Cd943A158";  // Replace with your contract's address
 
     const contract = new web3.eth.Contract(contractABI, contractAddress);
 
