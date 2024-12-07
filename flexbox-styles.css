@@ -343,9 +343,39 @@
               color: #1B245B; /* Blue color for the titles */
           }
   
-  /* -----------------------------dashboard-------------------------*/
-  
-  
+  /* ---------------------------dashboard---------------------------------------------dashboard-------------------------*/
+
+  /*------------------------------input fields-----------------------------------------------------------*/
+  .cta-input {
+    height: 50px; /* Increase height */
+    font-size: 18px; /* Bigger font */
+    color: #ffffff; /* Font color (white) */
+    background-color: #2c3e50; /* Fill color (dark blue/gray) */
+    border: 2px solid #3498db; /* Border color (blue) */
+    border-radius: 10px; /* Rounded edges */
+    padding: 0 15px; /* Add padding for better spacing inside */
+    outline: none; /* Remove default focus outline */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add slight shadow for depth */
+    transition: all 0.3s ease-in-out; /* Smooth hover/focus effects */
+}
+
+/* Placeholder styling */
+.cta-input::placeholder {
+    color: #bdc3c7; /* Light gray for placeholder text */
+    font-style: italic; /* Optional styling for placeholder */
+}
+
+/* Hover effect */
+.cta-input:hover {
+    border-color: #1abc9c; /* Change border color on hover */
+}
+
+/* Focus effect */
+.cta-input:focus {
+    border-color: #e74c3c; /* Red border when focused */
+    box-shadow: 0 0 8px rgba(231, 76, 60, 0.5); /* Add glow effect */
+}
+/*-----------------------------------------------------------------------------------------*/
   .dashboard-container {
       max-width: 1200px;
       margin: auto;

@@ -712,49 +712,39 @@ document.getElementById('buy-btn').addEventListener('click', async () => {
        
       ];
 
-       // Initialize contract
-       const contract = new web3.eth.Contract(contractABI, contractAddress);
+      // Initialize contract
+      const contract = new web3.eth.Contract(contractABI, contractAddress);
 
-       // Log all methods to see if buyWithBNB and buyWithUSDT exist
-       console.log(contract.methods);
+      // Log all methods to see if buyWithBNB exists
+      console.log(contract.methods);
 
-       // Get user input values
-       const amount = document.getElementById('amountToBuy').value;  // Get the input value (amount to buy)
-       const paymentMethod = document.querySelector('input[name="payment-method"]:checked').value; // Get selected payment method (BNB or USDT)
+      // Get the input value (amount of BNB)
+      const amount = document.getElementById('amountToBuy').value;
 
-       // Validate the amount
-       if (!amount || amount <= 0) {
-           alert("Please enter a valid amount.");
-           return;
-       }
+      // Validate the amount
+      if (!amount || amount <= 0) {
+          alert("Please enter a valid amount.");
+          return;
+      }
 
-       // Get the connected account
-       const accounts = await web3.eth.getAccounts();
+      // Get the connected account
+      const accounts = await web3.eth.getAccounts();
 
-       try {
-           if (paymentMethod === "bnb") {
-               // Convert the BNB amount to Wei (the smallest unit of Ether/Binance Coin)
-               const amountToSend = web3.utils.toWei(amount, 'ether');
-               // Call the buyWithBNB function
-               await contract.methods.buyWithBNB().send({
-                   from: accounts[0],
-                   value: amountToSend  // The amount of BNB to send with the transaction
-               });
-               alert('Purchase Successful! You bought tokens with BNB.');
-           } else if (paymentMethod === "usdt") {
-               // Convert the USDT amount (assuming USDT uses 6 decimals)
-               const amountToSend = web3.utils.toWei(amount, 'mwei');
-               // Call the buyWithUSDT function
-               await contract.methods.buyWithUSDT(amountToSend).send({
-                   from: accounts[0]
-               });
-               alert('Purchase Successful! You bought tokens with USDT.');
-           }
-       } catch (error) {
-           console.error("Transaction failed:", error);
-           alert('Transaction failed. Please try again.');
-       }
-   } else {
-       alert("Please install MetaMask!");
-   }
+      // Convert the BNB amount to Wei (the smallest unit of Ether/Binance Coin)
+      const amountToSend = web3.utils.toWei(amount, 'ether');
+
+      // Call the buyWithBNB function from your smart contract
+      try {
+          await contract.methods.buyWithBNB().send({
+              from: accounts[0],
+              value: amountToSend  // The amount of BNB to send with the transaction
+          });
+          alert('Purchase Successful!');
+      } catch (error) {
+          console.error("Transaction failed:", error);
+          alert('Transaction failed. Please try again.');
+      }
+  } else {
+      alert("Please install MetaMask!");
+  }
 });

@@ -273,16 +273,31 @@
 			</div>
 
     <!-- Buy/Sell Button Section -->
-			<div class="cta-section">
-
-				 <!-- Input for the amount the user wants to purchase -->
-				 <input type="number" id="amountToBuy" placeholder="Enter amount to buy (in BNB)" class="cta-input">
-    
-  
-				 <button class="cta-btn small-btn" id="buy-btn" data-tooltip="Purchase PuDuTo tokens.">Buy fucking PuDuTo Tokens</button>
-    
-				<button class="cta-btn small-btn sell-btn" data-tooltip="Sell your PuDuTo tokens.">Sell PuDuTo Tokens</button>
-			</div>
+	<div class="cta-section">
+		<!-- Input for the amount the user wants to purchase -->
+		<input type="number" id="amountToBuy" class="cta-input" placeholder="Enter amount to buy (BNB or USDT)">
+		
+		<!-- Radio buttons for payment method selection -->
+		<div class="payment-options">
+			<label>
+				<input type="radio" name="payment-method" value="bnb" checked>
+				Buy with BNB
+			</label>
+			<label>
+				<input type="radio" name="payment-method" value="usdt">
+				Buy with USDT
+			</label>
+		</div>
+	
+		<!-- Buttons for buy and sell actions -->
+		<button class="cta-btn small-btn" id="buy-btn" data-tooltip="Purchase PuDuTo tokens.">
+			Buy PuDuTo Tokens
+		</button>
+		<button class="cta-btn small-btn sell-btn" data-tooltip="Sell your PuDuTo tokens.">
+			Sell PuDuTo Tokens
+		</button>
+	</div>
+	
 		</div>
 
 
