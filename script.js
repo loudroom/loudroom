@@ -715,46 +715,62 @@ document.getElementById('buy-btn').addEventListener('click', async () => {
        // Initialize contract
        const contract = new web3.eth.Contract(contractABI, contractAddress);
 
-       // Log all methods to see if buyWithBNB and buyWithUSDT exist
-       console.log(contract.methods);
+        // Get user input and payment method
+        const amount = document.getElementById('amountToBuy').value;
+        const paymentMethod = document.querySelector('input[name="payment-method"]:checked').value;
 
-       // Get user input values
-       const amount = document.getElementById('amountToBuy').value;  // Get the input value (amount to buy)
-       const paymentMethod = document.querySelector('input[name="payment-method"]:checked').value; // Get selected payment method (BNB or USDT)
+        if (!amount || amount <= 0) {
+            alert("Please enter a valid amount.");
+            return;
+        }
 
-       // Validate the amount
-       if (!amount || amount <= 0) {
-           alert("Please enter a valid amount.");
-           return;
-       }
+        const accounts = await web3.eth.getAccounts(); // Get connected account
 
-       // Get the connected account
-       const accounts = await web3.eth.getAccounts();
+        try {
+            if (paymentMethod === "bnb") {
+                // Convert BNB amount to Wei
+                const amountToSend = web3.utils.toWei(amount, 'ether');
 
-       try {
-           if (paymentMethod === "bnb") {
-               // Convert the BNB amount to Wei (the smallest unit of Ether/Binance Coin)
-               const amountToSend = web3.utils.toWei(amount, 'ether');
-               // Call the buyWithBNB function
-               await contract.methods.buyWithBNB().send({
-                   from: accounts[0],
-                   value: amountToSend  // The amount of BNB to send with the transaction
-               });
-               alert('Purchase Successful! You bought tokens with BNB.');
-           } else if (paymentMethod === "usdt") {
-               // Convert the USDT amount (assuming USDT uses 6 decimals)
-               const amountToSend = web3.utils.toWei(amount, 'mwei');
-               // Call the buyWithUSDT function
-               await contract.methods.buyWithUSDT(amountToSend).send({
-                   from: accounts[0]
-               });
-               alert('Purchase Successful! You bought tokens with USDT.');
-           }
-       } catch (error) {
-           console.error("Transaction failed:", error);
-           alert('Transaction failed. Please try again.');
-       }
-   } else {
-       alert("Please install MetaMask!");
-   }
+                // Call buyWithBNB function
+                await contract.methods.buyWithBNB().send({
+                    from: accounts[0],
+                    value: amountToSend
+                });
+                alert('Purchase Successful with BNB!');
+            } else if (paymentMethod === "usdt") {
+                // Convert USDT amount (assume input is in standard USDT decimals)
+                const amountToSend = web3.utils.toWei(amount, 'mwei'); // Adjust for USDT's 6 decimals
+
+                // Approve USDT spend before purchase
+                const usdtContract = new web3.eth.Contract(
+                    [
+                        {
+                            "inputs": [
+                                { "internalType": "address", "name": "spender", "type": "address" },
+                                { "internalType": "uint256", "name": "amount", "type": "uint256" }
+                            ],
+                            "name": "approve",
+                            "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+                            "stateMutability": "nonpayable",
+                            "type": "function"
+                        }
+                    ],
+                    "0x1c4386faD5133A9BC17E504AEe3be9711621D793" // Replace with the actual USDT contract address
+                );
+
+                await usdtContract.methods.approve(contractAddress, amountToSend).send({ from: accounts[0] });
+
+                // Call buyWithUSDT function
+                await contract.methods.buyWithUSDT(amountToSend).send({
+                    from: accounts[0]
+                });
+                alert('Purchase Successful with USDT!');
+            }
+        } catch (error) {
+            console.error("Transaction failed:", error);
+            alert('Transaction failed. Please try again.');
+        }
+    } else {
+        alert("Please install MetaMask!");
+    }
 });
