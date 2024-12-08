@@ -12,7 +12,7 @@ async function getPuDuToPreBalance() {
         const web3 = new Web3(window.ethereum);
         await window.ethereum.enable();
 
-        const puDuToPreAddress = "0xYourTokenContractAddress"; // Replace with your token contract address
+        const puDuToPreAddress = "0xC5c14725F0BE56C5aF1E85FDdFDDAD9d339357e6"; // Replace with your token contract address
         const puDuToPreABI = [
             {
                 "inputs": [{ "internalType": "address", "name": "account", "type": "address" }],
