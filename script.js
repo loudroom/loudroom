@@ -166,6 +166,9 @@ document.addEventListener('DOMContentLoaded', () => {
         case 42220:
           networkName = 'Celo';
           break;
+          case 97:
+          networkName = 'Test Net';
+          break;
           
         default:
           networkName = `Unknown network (ID: ${networkId})`;
@@ -182,7 +185,8 @@ document.addEventListener('DOMContentLoaded', () => {
   } else {
     console.log('Ethereum provider not found. Please install MetaMask.');
   }
-});
+}
+);
 
 
 
