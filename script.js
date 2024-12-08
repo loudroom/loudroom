@@ -183,7 +183,7 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('Ethereum provider not found. Please install MetaMask.');
   }
 }
-getPuDuToPreBalance();
+
 );
 
 
