@@ -167,7 +167,7 @@ document.addEventListener('DOMContentLoaded', () => {
           networkName = 'Celo';
           break;
           case 97:
-          networkName = 'Test Net';
+          networkName = 'Binance TestNet';
           break;
           
         default:
