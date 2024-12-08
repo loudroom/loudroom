@@ -116,6 +116,8 @@ document.addEventListener('DOMContentLoaded', () => {
         polygon: polygonBalance || 0,
         avax: avaxBalance || 0
       };
+
+      getPuDuToPreBalance();
     }
 
     // Function to update the UI with the balances for native tokens

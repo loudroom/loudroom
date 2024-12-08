@@ -1,11 +1,18 @@
-document.getElementById('check-balance-btn').addEventListener('click', async () => {
-    // Check if MetaMask (or another provider) is available
-    if (window.ethereum) {
-        const web3 = new Web3(window.ethereum); // Initialize Web3 using the browser's Ethereum provider
-        await window.ethereum.enable(); // Request access to the user's wallet
 
-        // Contract address and ABI for PuDuToPre token
-        const puDuToPreAddress = "0xC5c14725F0BE56C5aF1E85FDdFDDAD9d339357e6"; // Replace with your contract address
+// Add event listener to the button
+document.getElementById('check-balance-btn').addEventListener('click', getPuDuToPreBalance);
+
+
+
+
+
+// Function to fetch the balance
+async function getPuDuToPreBalance() {
+    if (window.ethereum) {
+        const web3 = new Web3(window.ethereum);
+        await window.ethereum.enable();
+
+        const puDuToPreAddress = "0xYourTokenContractAddress"; // Replace with your token contract address
         const puDuToPreABI = [
             {
                 "inputs": [{ "internalType": "address", "name": "account", "type": "address" }],
@@ -16,18 +23,13 @@ document.getElementById('check-balance-btn').addEventListener('click', async () 
             }
         ];
 
-        // Initialize the contract
         const puDuToPreContract = new web3.eth.Contract(puDuToPreABI, puDuToPreAddress);
 
         try {
-            // Get the user's wallet address
             const accounts = await web3.eth.getAccounts();
             const userAddress = accounts[0];
 
-            // Call the balanceOf function to get the balance
             const balance = await puDuToPreContract.methods.balanceOf(userAddress).call();
-
-            // Convert the balance from Wei (if necessary)
             const formattedBalance = web3.utils.fromWei(balance, 'ether');
 
             // Update the UI with the balance
@@ -41,4 +43,7 @@ document.getElementById('check-balance-btn').addEventListener('click', async () 
     } else {
         alert("MetaMask is not installed. Please install it to use this feature.");
     }
-});
+}
+
+// Add event listener to the button
+document.getElementById('check-balance-btn').addEventListener('click', getPuDuToPreBalance);
