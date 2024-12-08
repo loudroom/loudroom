@@ -117,7 +117,7 @@ document.addEventListener('DOMContentLoaded', () => {
         avax: avaxBalance || 0
       };
 
-     
+      getPuDuToPreBalance();
     }
 
     // Function to update the UI with the balances for native tokens
@@ -166,7 +166,7 @@ document.addEventListener('DOMContentLoaded', () => {
         case 42220:
           networkName = 'Celo';
           break;
-       
+          
         default:
           networkName = `Unknown network (ID: ${networkId})`;
       }
@@ -182,9 +182,7 @@ document.addEventListener('DOMContentLoaded', () => {
   } else {
     console.log('Ethereum provider not found. Please install MetaMask.');
   }
-}
-
-);
+});
 
 
 
