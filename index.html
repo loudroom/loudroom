@@ -275,10 +275,10 @@
     <!-- Buy/Sell Button Section -->
 	<div class="cta-section">
 		<!-- Input for the amount the user wants to purchase -->
-		<input type="number" id="amountToBuy" class="cta-input" placeholder="Enter amount to buy (BNB or USDT)">
+		<input type="number" id="amountToBuy" class="cta-input" placeholder="Enter amount to buy (BNB only)">
 		
 		<!-- Radio buttons for payment method selection -->
-		<div class="payment-options">
+		<!--div class="payment-options">
 			<label>
 				<input type="radio" name="payment-method" value="bnb" checked>
 				Buy with BNB
@@ -287,7 +287,7 @@
 				<input type="radio" name="payment-method" value="usdt">
 				Buy with USDT
 			</label>
-		</div>
+		</div-->
 	
 		<!-- Buttons for buy and sell actions -->
 		<button class="cta-btn small-btn" id="buy-btn" data-tooltip="Purchase PuDuTo tokens.">
@@ -296,8 +296,13 @@
 		<button class="cta-btn small-btn sell-btn" data-tooltip="Sell your PuDuTo tokens.">
 			Sell PuDuTo Tokens
 		</button>
+		
+		
 		<button id="check-balance-btn" class="cta-btn">Check your PuDuToPre Balance</button>
+
 			<p id="balance-display">Your Balance: <span>0</span> PuDuToPre</p>
+			<p id="total-supply">Total Supply: <span>Loading...</span></p>
+<p id="percentage-held">You hold: <span>Loading...</span> of the total supply</p>
 	</div>
 	
 		</div>
@@ -455,8 +460,8 @@
 	
 <script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
 
-
-<script src="script.js"></script>
 <script src="ScriptGetPuDuToBalance.js"></script>
+<script src="script.js"></script>
+
 </body>
 </html>
