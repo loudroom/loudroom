@@ -532,10 +532,10 @@ const contractABI = [
 
    
 
-
 let contract;
 let userAccount;
 
+// DOM elements
 const connectButton = document.getElementById('connectButton');
 const contractDetails = document.getElementById('contractDetails');
 const tokenNameElem = document.getElementById('tokenName');
@@ -546,23 +546,15 @@ const fundsAvailableElem = document.getElementById('fundsAvailable');
 const ownerElem = document.getElementById('owner');
 const withdrawFundsButton = document.getElementById('withdrawFundsButton');
 
+// Event listeners
 connectButton.addEventListener('click', connectWallet);
 withdrawFundsButton.addEventListener('click', withdrawFunds);
 
-const Web3 = require('web3');
-const web3 = new Web3('https://bsc-dataseed.binance.org/'); // BNB Smart Chain RPC
-
-web3.eth.getBalance(contractAddress)
-    .then(balance => {
-        console.log(`Balance in wei: ${balance}`);
-        console.log(`Balance in BNB: ${web3.utils.fromWei(balance, 'ether')} BNB`);
-    })
-    .catch(error => {
-        console.error('Error fetching balance:', error);
-    });
+// Initialize Web3 instance
+const web3 = new Web3(Web3.givenProvider || 'https://bsc-dataseed.binance.org/');
 
 async function connectWallet() {
-    if (typeof window.ethereum !== 'undefined' || typeof window.web3 !== 'undefined') {
+    if (window.ethereum) {
         console.log("Ethereum wallet detected!");
         try {
             await window.ethereum.request({ method: 'eth_requestAccounts' });
@@ -574,6 +566,7 @@ async function connectWallet() {
             loadContractDetails();
         } catch (error) {
             console.error("User denied account access:", error);
+            alert("Failed to connect wallet!");
         }
     } else {
         console.error("No Ethereum wallet detected!");
@@ -583,33 +576,47 @@ async function connectWallet() {
 
 async function loadContractDetails() {
     try {
-        const tokenName = await contract.methods.name().call();
-        const tokenSymbol = await contract.methods.symbol().call();
-        const totalSupply = await contract.methods.totalSupply().call();
-        const bnbPrice = await contract.methods.getBNBPrice().call();
-        const owner = await contract.methods.owner().call();
-       // const fundsAvailable = await contract.methods.getAvailableFunds().call(); // Fetch available funds
+        const [tokenName, tokenSymbol, totalSupply, bnbPrice, owner] = await Promise.all([
+            contract.methods.name().call(),
+            contract.methods.symbol().call(),
+            contract.methods.totalSupply().call(),
+            contract.methods.getBNBPrice().call(),
+            contract.methods.owner().call()
+        ]);
 
         tokenNameElem.textContent = tokenName;
         tokenSymbolElem.textContent = tokenSymbol;
         totalSupplyElem.textContent = web3.utils.fromWei(totalSupply, 'ether');
-        bnbPriceElem.textContent = web3.utils.fromWei(bnbPrice, 'ether');
+        bnbPriceElem.textContent = web3.utils.fromWei(bnbPrice, 'ether') + " USDT";
         ownerElem.textContent = owner;
-      //  fundsAvailableElem.textContent = web3.utils.fromWei(fundsAvailable, 'ether') + " ETH"; // Display in Ether
     } catch (error) {
         console.error("Error loading contract details:", error);
     }
 }
 
 async function withdrawFunds() {
+    if (!contract) {
+        alert('Contract not initialized. Connect your wallet first.');
+        return;
+    }
     try {
         await contract.methods.withdrawFunds().send({ from: userAccount });
         alert('Funds successfully withdrawn!');
     } catch (error) {
         console.error('Error withdrawing funds:', error);
-        alert('Failed to withdraw funds!');
+        alert('Failed to withdraw funds. See console for details.');
     }
 }
-// fuck fuck fuck
-// Closing the DOMContentLoaded listener
+
+// Check contract balance (debugging purposes)
+web3.eth.getBalance(contractAddress)
+    .then(balance => {
+        console.log(`Balance in wei: ${balance}`);
+        console.log(`Balance in BNB: ${web3.utils.fromWei(balance, 'ether')} BNB`);
+    })
+    .catch(error => {
+        console.error('Error fetching balance:', error);
+    });
+
+//fucker
 });
