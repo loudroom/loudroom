@@ -610,6 +610,6 @@ async function withdrawFunds() {
         alert('Failed to withdraw funds!');
     }
 }
-
+// fuck fuck fuck
 // Closing the DOMContentLoaded listener
 });
