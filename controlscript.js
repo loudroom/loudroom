@@ -530,8 +530,6 @@ const contractABI = [
     
 ];
 
-   
-
 let contract;
 let userAccount;
 
@@ -557,6 +555,7 @@ async function connectWallet() {
     if (window.ethereum) {
         console.log("Ethereum wallet detected!");
         try {
+            // Request account access
             await window.ethereum.request({ method: 'eth_requestAccounts' });
             const accounts = await web3.eth.getAccounts();
             userAccount = accounts[0];
@@ -586,8 +585,8 @@ async function loadContractDetails() {
 
         tokenNameElem.textContent = tokenName;
         tokenSymbolElem.textContent = tokenSymbol;
-        totalSupplyElem.textContent = web3.utils.fromWei(totalSupply, 'ether');
-        bnbPriceElem.textContent = web3.utils.fromWei(bnbPrice, 'ether') + " USDT";
+        totalSupplyElem.textContent = web3.utils.fromWei(totalSupply, 'ether'); // Ensure correct formatting for totalSupply
+        bnbPriceElem.textContent = web3.utils.fromWei(bnbPrice, 'ether') + " USDT"; // Convert BNB price to USDT and display
         ownerElem.textContent = owner;
     } catch (error) {
         console.error("Error loading contract details:", error);
@@ -600,6 +599,7 @@ async function withdrawFunds() {
         return;
     }
     try {
+        // Check if user has permission to withdraw
         await contract.methods.withdrawFunds().send({ from: userAccount });
         alert('Funds successfully withdrawn!');
     } catch (error) {
@@ -608,7 +608,7 @@ async function withdrawFunds() {
     }
 }
 
-// Check contract balance (debugging purposes)
+// Check contract balance (for debugging purposes)
 web3.eth.getBalance(contractAddress)
     .then(balance => {
         console.log(`Balance in wei: ${balance}`);
@@ -618,5 +618,9 @@ web3.eth.getBalance(contractAddress)
         console.error('Error fetching balance:', error);
     });
 
-//fucker
+// Ensure MetaMask is available
+if (typeof window.ethereum === 'undefined') {
+    alert("MetaMask not found. Please install MetaMask to use this feature.");
+}
+//cunt
 });
