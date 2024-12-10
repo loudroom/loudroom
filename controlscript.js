@@ -533,7 +533,6 @@ const contractABI = [
    
 
 
-
 let contract;
 let userAccount;
 
@@ -550,11 +549,8 @@ const withdrawFundsButton = document.getElementById('withdrawFundsButton');
 connectButton.addEventListener('click', connectWallet);
 withdrawFundsButton.addEventListener('click', withdrawFunds);
 
-
 const Web3 = require('web3');
 const web3 = new Web3('https://bsc-dataseed.binance.org/'); // BNB Smart Chain RPC
-
-//const contractAddress = '0xYourContractAddressHere';
 
 web3.eth.getBalance(contractAddress)
     .then(balance => {
@@ -568,7 +564,6 @@ web3.eth.getBalance(contractAddress)
 async function connectWallet() {
     if (typeof window.ethereum !== 'undefined' || typeof window.web3 !== 'undefined') {
         console.log("Ethereum wallet detected!");
-        web3 = new Web3(window.ethereum);
         try {
             await window.ethereum.request({ method: 'eth_requestAccounts' });
             const accounts = await web3.eth.getAccounts();
@@ -606,14 +601,13 @@ async function loadContractDetails() {
     }
 }
 
-
 async function withdrawFunds() {
     try {
         await contract.methods.withdrawFunds().send({ from: userAccount });
         alert('Funds successfully withdrawn!');
     } catch (error) {
         console.error('Error withdrawing funds:', error);
-        alert('Failed to any withdraw funds!');
+        alert('Failed to withdraw funds!');
     }
 }
 
