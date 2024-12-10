@@ -533,7 +533,7 @@ const contractABI = [
    
 
 
-let web3;
+
 let contract;
 let userAccount;
 
