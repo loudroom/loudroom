@@ -550,6 +550,21 @@ const withdrawFundsButton = document.getElementById('withdrawFundsButton');
 connectButton.addEventListener('click', connectWallet);
 withdrawFundsButton.addEventListener('click', withdrawFunds);
 
+
+const Web3 = require('web3');
+const web3 = new Web3('https://bsc-dataseed.binance.org/'); // BNB Smart Chain RPC
+
+//const contractAddress = '0xYourContractAddressHere';
+
+web3.eth.getBalance(contractAddress)
+    .then(balance => {
+        console.log(`Balance in wei: ${balance}`);
+        console.log(`Balance in BNB: ${web3.utils.fromWei(balance, 'ether')} BNB`);
+    })
+    .catch(error => {
+        console.error('Error fetching balance:', error);
+    });
+
 async function connectWallet() {
     if (typeof window.ethereum !== 'undefined' || typeof window.web3 !== 'undefined') {
         console.log("Ethereum wallet detected!");
@@ -578,14 +593,14 @@ async function loadContractDetails() {
         const totalSupply = await contract.methods.totalSupply().call();
         const bnbPrice = await contract.methods.getBNBPrice().call();
         const owner = await contract.methods.owner().call();
-        const fundsAvailable = await contract.methods.getAvailableFunds().call(); // Fetch available funds
+       // const fundsAvailable = await contract.methods.getAvailableFunds().call(); // Fetch available funds
 
         tokenNameElem.textContent = tokenName;
         tokenSymbolElem.textContent = tokenSymbol;
         totalSupplyElem.textContent = web3.utils.fromWei(totalSupply, 'ether');
         bnbPriceElem.textContent = web3.utils.fromWei(bnbPrice, 'ether');
         ownerElem.textContent = owner;
-        fundsAvailableElem.textContent = web3.utils.fromWei(fundsAvailable, 'ether') + " ETH"; // Display in Ether
+      //  fundsAvailableElem.textContent = web3.utils.fromWei(fundsAvailable, 'ether') + " ETH"; // Display in Ether
     } catch (error) {
         console.error("Error loading contract details:", error);
     }
