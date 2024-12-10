@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contract Interaction</title>
+    <link rel="stylesheet" href="controlstyles.css">
+    <script src="https://cdn.jsdelivr.net/npm/web3/dist/web3.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Contract Interaction</h1>
+        <button id="connectButton">Connect Wallet</button>
+
+        <div id="contractDetails" style="display:none;">
+            <h2>Contract Details</h2>
+            <div class="box">
+                <h3>Token Name</h3>
+                <p id="tokenName"></p>
+            </div>
+            <div class="box">
+                <h3>Token Symbol</h3>
+                <p id="tokenSymbol"></p>
+            </div>
+            <div class="box">
+                <h3>Total Supply</h3>
+                <p id="totalSupply"></p>
+            </div>
+            <div class="box">
+                <h3>BNB Price (USD)</h3>
+                <p id="bnbPrice"></p>
+            </div>
+            <div class="box">
+                <h3>Funds Available for Withdrawal</h3>
+                <p id="fundsAvailable"></p>
+            </div>
+            <div class="box">
+                <h3>Owner</h3>
+                <p id="owner"></p>
+            </div>
+
+            <button id="withdrawFundsButton">Withdraw Funds</button>
+        </div>
+    </div>
+
+   
+    <script src="controlscript.js"></script>
+</body>
+</html>
