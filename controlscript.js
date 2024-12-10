@@ -572,20 +572,25 @@ async function connectWallet() {
 }
 
 async function loadContractDetails() {
-    const tokenName = await contract.methods.name().call();
-    const tokenSymbol = await contract.methods.symbol().call();
-    const totalSupply = await contract.methods.totalSupply().call();
-    const bnbPrice = await contract.methods.getBNBPrice().call();
-    const owner = await contract.methods.owner().call();
-    const fundsAvailable = await contract.methods.fundsRecipient().call();
+    try {
+        const tokenName = await contract.methods.name().call();
+        const tokenSymbol = await contract.methods.symbol().call();
+        const totalSupply = await contract.methods.totalSupply().call();
+        const bnbPrice = await contract.methods.getBNBPrice().call();
+        const owner = await contract.methods.owner().call();
+        const fundsAvailable = await contract.methods.getAvailableFunds().call(); // Fetch available funds
 
-    tokenNameElem.textContent = tokenName;
-    tokenSymbolElem.textContent = tokenSymbol;
-    totalSupplyElem.textContent = web3.utils.fromWei(totalSupply, 'ether');
-    bnbPriceElem.textContent = web3.utils.fromWei(bnbPrice, 'ether');
-    ownerElem.textContent = owner;
-    fundsAvailableElem.textContent = fundsAvailable;
+        tokenNameElem.textContent = tokenName;
+        tokenSymbolElem.textContent = tokenSymbol;
+        totalSupplyElem.textContent = web3.utils.fromWei(totalSupply, 'ether');
+        bnbPriceElem.textContent = web3.utils.fromWei(bnbPrice, 'ether');
+        ownerElem.textContent = owner;
+        fundsAvailableElem.textContent = web3.utils.fromWei(fundsAvailable, 'ether') + " ETH"; // Display in Ether
+    } catch (error) {
+        console.error("Error loading contract details:", error);
+    }
 }
+
 
 async function withdrawFunds() {
     try {
