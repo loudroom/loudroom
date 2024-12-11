@@ -3,48 +3,86 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contract Interaction</title>
-    <link rel="stylesheet" href="controlstyles.css">
+    <title>Withdraw BNB and USDT</title>
     <script src="https://cdn.jsdelivr.net/npm/web3/dist/web3.min.js"></script>
 </head>
 <body>
-    <div class="container">
-        <h1>Contract Interaction</h1>
-        <button id="connectButton">Connect Wallet</button>
+    <h1>Withdraw Funds</h1>
 
-        <div id="contractDetails" style="display:none;">
-            <h2>Contract Details</h2>
-            <div class="box">
-                <h3>Token Name</h3>
-                <p id="tokenName"></p>
-            </div>
-            <div class="box">
-                <h3>Token Symbol</h3>
-                <p id="tokenSymbol"></p>
-            </div>
-            <div class="box">
-                <h3>Total Supply</h3>
-                <p id="totalSupply"></p>
-            </div>
-            <div class="box">
-                <h3>BNB Price (USD)</h3>
-                <p id="bnbPrice"></p>
-            </div>
-            <div class="box">
-                <h3>Funds Available for Withdrawal</h3>
-                <p id="fundsAvailable"></p>
-            </div>
-            <div class="box">
-                <h3>Owner</h3>
-                <p id="owner"></p>
-            </div>
-
-            <button id="withdrawFundsButton">Withdraw all Funds</button>
-        </div>
+    <div>
+        <p><strong>BNB Balance:</strong> <span id="bnbBalance">Loading...</span></p>
+        <button id="withdrawBNB">Withdraw BNB</button>
     </div>
 
-   
-    
-    <script  src="controlscript.js"></script>
+    <div>
+        <p><strong>USDT Balance:</strong> <span id="usdtBalance">Loading...</span></p>
+        <button id="withdrawUSDT">Withdraw USDT</button>
+    </div>
+
+    <script>
+        const CONTRACT_ABI = [/* Your ABI Here */];
+        const contractAddress = "0xC5c14725F0BE56C5aF1E85FDdFDDAD9d339357e6";
+        let web3;
+        let contract;
+
+        // Initialize Web3
+        async function initWeb3() {
+            if (window.ethereum) {
+                web3 = new Web3(window.ethereum);
+                await window.ethereum.request({ method: 'eth_requestAccounts' });
+                const accounts = await web3.eth.getAccounts();
+                contract = new web3.eth.Contract(CONTRACT_ABI, contractAddress, { from: accounts[0] });
+                loadBalances();
+            } else {
+                alert('Please install MetaMask to use this feature.');
+            }
+        }
+
+        // Load Balances
+        async function loadBalances() {
+            try {
+                const bnbBalance = await web3.eth.getBalance(contractAddress);
+                document.getElementById('bnbBalance').textContent = web3.utils.fromWei(bnbBalance, 'ether') + ' BNB';
+
+                const usdtAddress = await contract.methods.USDT().call();
+                const usdtContract = new web3.eth.Contract(CONTRACT_ABI, usdtAddress);
+                const usdtBalance = await usdtContract.methods.balanceOf(contractAddress).call();
+                document.getElementById('usdtBalance').textContent = web3.utils.fromWei(usdtBalance, 'ether') + ' USDT';
+            } catch (error) {
+                console.error('Error loading balances:', error);
+            }
+        }
+
+        // Withdraw BNB
+        async function withdrawBNB() {
+            try {
+                await contract.methods.withdrawFunds().send();
+                alert('BNB withdrawn successfully!');
+                loadBalances();
+            } catch (error) {
+                console.error('Error withdrawing BNB:', error);
+                alert('Failed to withdraw BNB.');
+            }
+        }
+
+        // Withdraw USDT
+        async function withdrawUSDT() {
+            try {
+                await contract.methods.withdrawUSDT().send();
+                alert('USDT withdrawn successfully!');
+                loadBalances();
+            } catch (error) {
+                console.error('Error withdrawing USDT:', error);
+                alert('Failed to withdraw USDT.');
+            }
+        }
+
+        // Attach event listeners
+        document.getElementById('withdrawBNB').addEventListener('click', withdrawBNB);
+        document.getElementById('withdrawUSDT').addEventListener('click', withdrawUSDT);
+
+        // Initialize the app
+        initWeb3();
+    </script>
 </body>
 </html>
