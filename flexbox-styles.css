@@ -330,8 +330,8 @@
               padding: 20px;
               border: 1px solid #ccc;
               border-radius: 8px;
-                min-width: 300px; 
-              max-width: 300px;
+                min-width: 250px; 
+              max-width: 2800px;
                 background: linear-gradient(1deg,  #030d43,  #030d43, #438ce3 , #111ce9   ); /* Gradient from blue to cyan */
               border-image: linear-gradient(1deg, #438ce3,#030d43,  #030d43 ) 1;
               box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
@@ -457,6 +457,7 @@
       border-radius: 8px;
      border: 1px solid #00d9ff;
       min-width: 300px;
+      line-height: 1.8; /* Adjust the value as needed */
       
       
   }
