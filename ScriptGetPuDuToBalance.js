@@ -1,4 +1,5 @@
 
+
 // Add event listener to the button
 document.getElementById('check-balance-btn').addEventListener('click', getPuDuToPreBalanceAndStats);
 
@@ -55,6 +56,7 @@ async function getPuDuToPreBalanceAndStats() {
             document.getElementById('balance-display').querySelector('span').innerText = formattedBalance;
             document.getElementById('total-supply').querySelector('span').innerText = formattedTotalSupply;
             document.getElementById('percentage-held').querySelector('span').innerText = `${percentageHeld}%`;
+            document.getElementById('return-amount').querySelector('span').innerText = `${percentageHeld}%`;
         } catch (error) {
             console.error("Error fetching data from the contract:", error);
             alert("Failed to fetch balance or total supply. Please try again.");
@@ -63,5 +65,4 @@ async function getPuDuToPreBalanceAndStats() {
         alert("MetaMask is not installed. Please fucking install it to use this feature.");
     }
 }
-
 
