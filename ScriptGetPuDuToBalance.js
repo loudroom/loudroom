@@ -63,7 +63,7 @@ async function getPuDuToPreBalanceAndStats() {
             alert("Failed to fetch balance or total supply. Please try again.");
         }
     } else {
-        alert("MetaMask is not installed. Please fucking install it to use this feature.");
+        alert("MetaMask is not installed. Please install it to use this feature.");
     }
 }
 
