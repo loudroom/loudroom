@@ -56,7 +56,7 @@ async function getPuDuToPreBalanceAndStats() {
             document.getElementById('balance-display').querySelector('span').innerText = formattedBalance;
             document.getElementById('total-supply').querySelector('span').innerText = formattedTotalSupply;
             document.getElementById('percentage-held').querySelector('span').innerText = `${percentageHeld}%`;
-            const formattedBalanceInDollars = `$${(formattedBalance * 0.01).toFixed(2)}`;
+            const formattedBalanceInDollars = `$${(formattedBalance * 1).toFixed(2)}`;
             document.getElementById('return-amount').querySelector('span').innerText = formattedBalanceInDollars;
         } catch (error) {
             console.error("Error fetching data from the contract:", error);
