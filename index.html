@@ -188,7 +188,7 @@
 			<div class="blockchain-container">
 				
 				<div class="blockchain-balance">
-					<h4>Your Holding</h4>									
+					<h4>You are holding</h4>									
 						<p id="balance-display"> <span class="tooltip" data-tooltip="The total number of PuDuTo tokens you currently own." >0</span></p>
 						 PuDuTo
 				</div>
@@ -210,12 +210,24 @@
 					at the end of round 1.
 				</div>
 				<div class="width100">
-					<div class="width50 graph">  
-						
+					<div class=" blockchain-balance width75 text14left">  
+					Buy PuDuTo<br>
+					Buying PuDuTo allows you to sit back and relax, let your money work for you. Your investemnt will be locked in the vault until the end of round 1, The return will be paid at the rate of
+					1 USD per PuDuTo.	
+					Buy 1 PuDuTo = .5 usd - Presale Offer only.
+					You cannot claim or exit while round is running, only between rounds.
 		
 					</div>
-				  	<div class="buyPuDuTo">  
-							<input type="number" id="amountToBuy" class="cta-input" placeholder="Enter amount to buy (BNB only)">
+				  	<div class="buyPuDuTo blockchain-balance">  
+							<input type="number" id="amountToBuy" class="cta-input" placeholder="Enter BNB (BNB only)">
+							
+							<p id="result-display" class="text14left">
+								<span id="puduto-amount">0</span> PuDuTo 
+							</p>
+							<p id="usd-display" class="text14left">USD: 
+								<span id="usd-equivalent">$0.00</span>
+							</p>
+							
 							<button class="cta-btn small-btn" id="buy-btn" data-tooltip="Purchase PuDuTo tokens.">
 							Buy PuDuTo Tokens
 						</button>

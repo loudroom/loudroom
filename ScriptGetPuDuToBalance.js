@@ -67,3 +67,44 @@ async function getPuDuToPreBalanceAndStats() {
     }
 }
 
+
+
+
+
+//-------------------------------------------Get current bnb price in usd ----------------------------------------------------
+const tokenPriceUSD = 0.5; // Fixed price per PuDuTo in USD
+let currentBNBPrice = null;
+
+// Fetch BNB price from CoinGecko
+async function fetchBNBPrice() {
+    try {
+        const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=binancecoin&vs_currencies=usd');
+        const data = await response.json();
+        currentBNBPrice = data.binancecoin.usd;
+        console.log(`Current BNB Price (USD): $${currentBNBPrice}`);
+    } catch (error) {
+        console.error('Error fetching BNB price:', error);
+    }
+}
+
+// Real-time calculation on user input
+document.getElementById('amountToBuy').addEventListener('input', function () {
+    const bnbAmount = parseFloat(this.value); // Get the entered BNB amount
+
+    if (bnbAmount > 0 && currentBNBPrice) {
+        const usdAmount = (bnbAmount * currentBNBPrice).toFixed(2); // Calculate USD equivalent
+        const tokenAmount = (usdAmount / tokenPriceUSD).toFixed(2); // Calculate number of tokens
+
+        // Update the display
+        document.getElementById('puduto-amount').innerText = tokenAmount;
+        document.getElementById('usd-equivalent').innerText = `$${usdAmount}`;
+    } else {
+        document.getElementById('puduto-amount').innerText = 0;
+        document.getElementById('usd-equivalent').innerText = '$0.00';
+    }
+});
+
+// Fetch BNB price when the page loads
+fetchBNBPrice();
+
+
