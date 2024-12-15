@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Token Price & Funds Manager</title>
+    <title>Token Manager</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.10.0/web3.min.js"></script>
     <style>
         body {
@@ -44,7 +44,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>Token Price & Funds Manager</h1>
+        <h1>Token Manager</h1>
 
         <!-- Connect Wallet Section -->
         <div class="input-group">
@@ -54,10 +54,16 @@
 
         <!-- Display & Update Token Price -->
         <div class="input-group">
-            <label>Current Token Price in (USD):</label>
+            <label>Current Token Price (USD):</label>
             <p id="tokenPriceDisplay">$0.00</p>
             <input type="number" id="newTokenPrice" placeholder="Enter new token price">
             <button id="updateTokenPriceButton">Update Token Price</button>
+        </div>
+
+        <!-- Display Total Tokens in Circulation -->
+        <div class="input-group">
+            <label>Total Tokens in Circulation:</label>
+            <p id="tokensInCirculation">0</p>
         </div>
 
         <!-- View & Withdraw Funds -->
@@ -70,10 +76,10 @@
     </div>
 
     <script>
-        // Web3 Initialization
         let web3;
-let userAccount;
-let contractInstance;
+        let userAccount;
+        let contractInstance;
+       
 
         const contractAddress = '0xe00becdc20831431c76e3a4354e4007301f65bda';  // Replace with your contract's address
         const contractABI = [
@@ -660,78 +666,131 @@ let contractInstance;
 
 ]
       
-// Connect Wallet Functionality
-async function connectWallet() {
-    try {
-        // Check if Ethereum provider is available
-        if (typeof window.ethereum === "undefined") {
-            alert("MetaMask is not installed. Please install MetaMask to use this feature.");
-            console.error("MetaMask not detected. window.ethereum is undefined.");
-            return;
+
+
+        
+
+        // Connect Wallet Functionality
+        async function connectWallet() {
+            if (typeof window.ethereum === "undefined") {
+                alert("MetaMask is not installed. Please install MetaMask to use this feature.");
+                return;
+            }
+
+            try {
+                // Initialize Web3
+                web3 = new Web3(window.ethereum);
+                contractInstance = new web3.eth.Contract(contractABI, contractAddress);
+
+                // Request account access
+                const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+                userAccount = accounts[0];
+                document.getElementById("walletAddress").innerText = `Wallet Address: ${userAccount}`;
+
+                // Fetch initial data
+                fetchTokenPrice();
+                fetchTokensInCirculation();
+                fetchContractBalance();
+            } catch (error) {
+                console.error("Error connecting wallet:", error);
+            }
         }
 
-        // Initialize Web3
-        web3 = new Web3(window.ethereum);
-        console.log("Web3 initialized:", web3);
+        // Fetch Token Price
+        async function fetchTokenPrice() {
+                try {
+                    const tokenPriceInWei = await contractInstance.methods.tokenPriceUSD().call();
+                    
+                    // Convert token price from wei to USD
+                    const tokenPriceInUSD = web3.utils.fromWei(tokenPriceInWei, 'ether');
+                    
+                    // Display token price as USD
+                    document.getElementById("tokenPriceDisplay").innerText = `$${parseFloat(tokenPriceInUSD).toFixed(2)}`;
+                } catch (error) {
+                    console.error("Error fetching token price:", error);
+                }
+            }
 
-        // Request wallet connection
-        const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
-        console.log("Accounts fetched:", accounts);
+        // Update Token Price
+        async function updateTokenPrice() {
+            const newPrice = document.getElementById("newTokenPrice").value;
+            if (!newPrice) {
+                alert("Please enter a new token price.");
+                return;
+            }
 
-        // Check if accounts are returned
-        if (!accounts || accounts.length === 0) {
-            alert("No accounts returned. Please ensure MetaMask is unlocked.");
-            console.error("No accounts returned from eth_requestAccounts.");
-            return;
+            try {
+                await contractInstance.methods.updateTokenPrice(web3.utils.toWei(newPrice, 'ether')).send({ from: userAccount });
+                alert("Token price updated successfully.");
+                fetchTokenPrice();
+            } catch (error) {
+                console.error("Error updating token price:", error);
+            }
         }
 
-        // Set the first account as the active user
-        userAccount = accounts[0];
-        console.log("Wallet connected successfully:", userAccount);
-
-        // Update UI with wallet address
-        document.getElementById("walletAddress").innerText = `Wallet Address: ${userAccount}`;
-
-    } catch (error) {
-        // Handle errors
-        if (error.code === 4001) {
-            alert("Connection request was rejected by the user.");
-        } else if (error.message.includes("already processing")) {
-            alert("MetaMask is already processing a connection request. Please check the MetaMask window.");
-        } else {
-            alert("An error occurred while connecting to the wallet.");
-            console.error("Error connecting wallet:", error);
+        // Fetch Total Tokens in Circulation
+        async function fetchTokensInCirculation() {
+            try {
+                const tokens = await contractInstance.methods.totalSupply().call();
+                document.getElementById("tokensInCirculation").innerText = tokens;
+            } catch (error) {
+                console.error("Error fetching tokens in circulation:", error);
+            }
         }
-    }
-}
 
-// Fetch Token Price
-async function fetchTokenPrice() {
-    if (!contractInstance) {
-        console.error("Contract instance not initialized.");
-        return;
-    }
-    try {
-        const tokenPrice = await contractInstance.methods.getTokenPrice().call();
-        document.getElementById('tokenPriceDisplay').innerText = `$${parseFloat(tokenPrice).toFixed(2)}`;
-    } catch (error) {
-        console.error("Error fetching token price:", error);
-    }
-}
+        // Fetch Contract Balance
+        async function fetchContractBalance() {
+            try {
+                const balance = await web3.eth.getBalance(contractAddress);
+                document.getElementById("contractBalance").innerText = `${web3.utils.fromWei(balance, 'ether')} ETH`;
+            } catch (error) {
+                console.error("Error fetching contract balance:", error);
+            }
+        }
 
-// Fetch Contract Balance
-async function fetchContractBalance() {
-    if (!web3) {
-        console.error("Web3 instance not initialized.");
-        return;
-    }
-    try {
-        const balance = await web3.eth.getBalance(contractAddress);
-        document.getElementById('contractBalance').innerText = `${web3.utils.fromWei(balance, 'ether')} ETH`;
-    } catch (error) {
-        console.error("Error fetching contract balance:", error);
-    }
-}
+        // Withdraw Funds
+        async function withdrawFunds() {
+            const amount = document.getElementById("withdrawAmount").value;
 
-// Event Listeners
-document.getElementById('connectWalletButton').addEventListener('click', connectWallet);
+            // Check if the amount is empty or not a valid number
+            if (!amount || isNaN(amount) || parseFloat(amount) <= 0) {
+                alert("Please enter a valid amount greater than 0.");
+                return;
+            }
+
+            try {
+                // Convert amount to wei (in case it's in ether or BNB) before sending to the contract
+                const amountInWei = web3.utils.toWei(amount, 'ether');
+
+                // Check if the user has enough balance
+                const contractBalance = await web3.eth.getBalance(contractAddress);
+                if (parseFloat(web3.utils.fromWei(contractBalance, 'ether')) < parseFloat(amount)) {
+                    alert("Insufficient contract balance. Please check the balance and try again.");
+                    return;
+                }
+
+                // Send the withdrawal transaction
+                await contractInstance.methods.withdrawFunds(amountInWei).send({ from: userAccount });
+
+                alert("Funds withdrawn successfully.");
+                fetchContractBalance();
+            } catch (error) {
+                if (error.message.includes("insufficient funds")) {
+                    alert("Insufficient funds in the contract. Please check the contract balance.");
+                } else if (error.message.includes("revert")) {
+                    alert("Transaction failed. Please check the contract conditions and try again.");
+                } else {
+                    console.error("Error withdrawing funds:", error);
+                    alert("An error occurred while withdrawing funds. Please try again.");
+                }
+            }
+        }
+
+
+        // Event Listeners
+        document.getElementById('connectWalletButton').addEventListener('click', connectWallet);
+        document.getElementById('updateTokenPriceButton').addEventListener('click', updateTokenPrice);
+        document.getElementById('withdrawFundsButton').addEventListener('click', withdrawFunds);
+    </script>
+</body>
+</html>
