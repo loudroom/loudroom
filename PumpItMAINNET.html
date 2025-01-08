@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pump It MAINNET</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            align-items: center;
+            text-align: center;
+        }
+        .groupingBox{
+            border: 4px;
+            border-radius: 8px;
+            background: rgb(184, 175, 243);
+            padding: 10px;
+            margin-bottom: 5px;
+
+        }
+        
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        .button {
+            padding: 15px 15px;
+            margin: 15px 0;
+            background-color: #044488;
+            color: white;
+            border: 2px;
+            border-radius: 15px;
+            cursor: pointer;
+            width: 75%;
+        }
+
+        .button:hover {
+            background-color: #0056b3;
+        }
+
+        .input-group {
+            margin: 10px 0;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .input-group input {
+            width: 50%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .result {
+            margin-top: 20px;
+            font-size: 16px;
+            color: #333;
+        }
+
+        .error {
+            color: red;
+        }
+
+        .success {
+            color: green;
+        }
+
+
+
+
+
+
+        .metalBackground {
+    background: linear-gradient(135deg, 
+   /* BNB gold  #f3ba2f, 
+    #f0a620, 
+    #f6ac35, 
+    #d4830e, 
+    #c67108);*/
+       #5b2ce9,  /* Light silver */
+        #2a34e9,
+        #438ce3,
+        #223ac2,
+        #213edf  
+    );
+    background-size: 200% 200%;
+    animation: shine 30s infinite;
+    width: 500px;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    padding: 5px;
+    flex-direction: column;
+    /* Flexbox properties for centering */
+    display: flex;
+    align-items: center;      /* Centers vertically */
+    justify-content: center;  /* Centers horizontally */
+           
+}
+
+@keyframes shine {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.centerText {
+    text-align: center;
+    font-family: Arial, sans-serif;
+    color: white;
+    padding: 5px; 
+    background-color: #0e0d0d;
+    border-radius: 15px;
+    
+    /* Apply the gradient as the border */
+    border: 2px solid #709404;
+    /*border-image: linear-gradient(135deg, #030d43, #030d43, #438ce3) 1;  /* Gradient border */
+    
+    /* To make the background follow the same rounded corner as the border */
+   
+}
+
+    .width95 {
+        min-width: 95%;
+    }
+
+    .fadeBuy{
+        opacity: 1; /* Initial state */
+    }
+    .fadeSell{
+        opacity: 1; /* Initial state */    
+    }
+
+
+    </style>
+</head>
+<body>
+
+
+    <div class="metalBackground">
+        <div class="centerText width95">
+            <span style="font-size: 22px;">BNB/USDT PUMP</span><br>
+            <span id="contractAddressDisplay" style="font-size: 12px;" >Contract Address not loaded</span>
+        </div>
+
+        <!------Top Line initial and holding values also percentage profit or loss---------------------------------------------------------------->
+        <div style="display: flex; flex-direction: row; width: 95%; padding: 5px; gap: 5px;">
+            <div class="centerText" style="flex: 1;">
+                Principal<br>
+                <span id="BNBinit" style="color:#438ce3; font-size: 22px;"> BNB principal </span>
+                <span id="USDTinit" style="color:#438ce3; font-size: 22px;"> USDT pricipal </span>
+            </div>
+            <div class="centerText" style="flex: 1;">
+                Previous Trade<br>
+                <span id="BNBprevious" style="color:#438ce3; font-size: 22px;"> BNB previous </span>
+                <span id="USDTprevious" style="color:#438ce3; font-size: 22px;"> USDT previous </span>
+            </div>    
+            <div class="centerText" style="flex: 1;">
+                Yield<br>
+                <span id="BNByield" style="color:#438ce3; font-size: 22px;"> BNB Yield </span>
+                <span id="USDTyield" style="color:#438ce3; font-size: 22px;"> USDT Yield </span>
+            </div>    
+        </div>
+         
+        <!---------------Voting Buttons------------------------------------------------------------------------------------------------>
+        <div style="display: flex; flex-direction: row; width: 95%; padding: 5px; gap: 5px;">
+            <div  style="flex: 1;  text-align: center;">
+                <button class="button" onclick="revokeVote()"> - Vote</button>
+            </div>
+            <div  id="result" class=" centerText" style="flex: 1;  text-align: center;">
+            </div>
+            <div  style="flex: 1;  text-align: center;">
+                <button class="button" onclick="addVote()"> + Vote</button>
+            </div>
+        </div>
+<!------Influence points--------------------------------------------------------------------------------------------->
+<div style="display: flex; flex-direction: row; width: 95%; padding: 5px; gap: 5px;">
+    <div class="centerText" style="flex: 1;">
+        Your Influence <br>
+        <span id="influencePoints" style="color:#438ce3; font-size: 22px;"> 790 </span>
+    </div>
+    <div class="centerText" style="flex: 1;">
+        Influence Needed<br>
+        <span id="votesNeeded" style="color:#438ce3; font-size: 22px;">  </span>
+    </div>    
+    <div class="centerText" style="flex: 1;">
+        Influence Received<br>
+        <span id="votesCurrent" style="color:#438ce3; font-size: 22px;">   </span>
+    </div>    
+</div>
+    
+
+         <!--Next Trade Window-->
+        <div class="centerText width95">
+            <span style="font-size: 18px;">Next Trade</span><br>
+            <span id="nextTrade" style="color:#438ce3; font-size: 22px;" >Not Working</span><br>
+            <span id="nextTradeDetails" style="font-size: 12px;" >increasing your BNB by 0.01, from last trade.</span>
+        </div>
+
+        <!--Selling-->
+        <div id ="fadeSell" style="display: flex; flex-direction: row; width: 95%; padding: 5px; gap: 5px;">
+            <div class="centerText " style="flex: 1;">
+                BNB<br>
+                <span id="walletBalanceBNB1" style="color:#438ce3; font-size: 22px;">  </span>
+            </div>
+            <div class="centerText " style="flex: 1;">
+                Expected USDT<br>
+                <span id ="expectedUSDT" style="color:#438ce3; font-size: 22px;">  </span>
+            </div>
+            <div class="centerText" style="flex: 1;">
+                SELL BNB<br>
+                <span id="pancakeBNBvalue" style="color:#438ce3; font-size: 22px;">  </span>
+            </div>            
+        </div>
+
+       
+ 
+        <!--Buying-->
+        <div id ="fadeBuy" style="display: flex; flex-direction: row; width: 95%; padding: 5px; gap: 5px;">
+             <div  class="centerText " style="flex: 1;">
+                USDT<br>
+                <span id="walletBalanceUSDT1" style="color:#438ce3; font-size: 22px;">  </span>
+            </div>
+            <div  class="centerText " style="flex: 1;">
+                Expected BNB<br>
+                <span id="expectedBNB" style="color:#438ce3; font-size: 22px;">  </span>
+            </div>
+         
+            <div class="centerText" style="flex: 1;">BUY BNB<br>
+                <span id="pancakeUSDTvalue" style="color:#438ce3; font-size: 22px;">  </span>
+            </div>
+        </div>
+
+         <!-- initial to previous profit/loss-->
+        <div class="centerText width95">
+            <span style="font-size: 13px;">Pump Details:</span><br>
+            <span id="InitPrevUSDT" style="color:#438ce3; font-size: 16px;" >Initial USDT...</span><br>
+            <span id="InitPrevBNB" style="color:#438ce3; font-size: 16px;" > Initial BNB...</span><br>
+            <span id="PrevExpectedUSDT" style="color:#438ce3; font-size: 16px;" >Initial USDT...</span><br>
+            <span id="PrevExpectedBNB" style="color:#438ce3; font-size: 16px;" > Initial BNB...</span>
+        </div>
+        </div>
+
+
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+<div class="container">
+    <h1>TradingBot MAIN NET ControlPanel</h1>
+   <span id="walletAddressDisplay">Contract Address not loaded</span>
+   <br>
+   <br>
+
+   <div class="groupingBox" style="font-weight: bold;">
+    <p >   </p>
+    <p id ="previousUSDT">   </p>
+    <p>   </p>
+    <p id="previousBNB">    </p>
+    <p id="initBNB">   </p>
+    <p id="initUSDT">          </p>
+    <p        </p>
+    <p id="pancakeUSDTvalue">     </p>
+    <p id="pancakeBNBvalue">      </p>
+    <p>   </p>
+    <p>   </p>
+    <p>   </p>
+    <p>   </p>
+    <p>   </p>
+    <p>   </p>
+
+   
+   </div>
+
+
+
+
+    <div class="groupingBox">
+        <div class="input-group">
+            <label for="routerAddress">Router Address Testnet: 0xD99D1c33F9fC3444f8101754aBC46c52416550D1</label>
+            <input type="text" id="routerAddress" placeholder="Enter Router Address">
+        </div>
+        <button class="button" onclick="updateRouter()">Update Router</button>
+        <div class="input-group">
+            <label for="bnbAddress">BNB Address  Testnet: wBNB: 0xae13d989dac2f0debff460ac112a837c89baa7cd</label>
+            <input type="text" id="bnbAddress" placeholder="Enter BNB Address">
+        </div>
+        <button class="button" onclick="updateBNBAddress()">Update BNB Address</button>
+        <div class="input-group">
+            <label for="usdtAddress">USDT Address TestNet: 0x337610d27c682E347C9cD60BD4b3b107C9d34dDd</label><br>
+            <label for="usdtAddress">Eth Address TestNet: 0xd66c6B4F0be8CE5b39D52E0Fd1344c389929B378</label><br>
+            <br>
+            <label for="usdtAddress">Eth Address Mainnet: 0x4DB5a66E937A9F4473fA95b1cAF1d1E1D62E29EA</label><br>
+            <label for="usdtAddress">DOT Address Mainnet: 0x7083609fCE4d1d8Dc0C979AAb8c869Ea2C873402</label><br>
+         
+            
+
+            <input type="text" id="usdtAddress" placeholder="Enter USDT Address">
+        </div>
+        <button class="button" onclick="updateUSDTAddress()">Update USDT Address</button>
+        
+        <div class="input-group">
+            <label for="usdtAddress">PUDUFO Address TestNet: 0x82c786aDdc797C0CaA192Ccf1f5aB5E224a4acAf</label><br>
+            <input type="text" id="pudufoAddress" placeholder="Enter PUDUFO Address">
+        </div>
+        <button class="button" onclick="updatePUDUFOAddress()">Update USDT Address</button>
+
+
+
+    </div>
+
+
+
+    <div class="groupingBox">
+        <div class="input-group">
+            <label for="votePoints">Set Influence Points</label>
+            <input type="number" id="votePoints" placeholder="Enter Vote Points">
+        </div>
+        <button class="button" onclick="setVotePoints()">Set Influence Points</button>
+      
+    </div>
+
+    
+    
+    <div class="groupingBox">
+        <div>
+            <span id="walletBalanceBNB"></span>
+            <input type="number" id="withdrawBNBAmount" placeholder="Enter amount in BNB" style="width: 140px; text-align: center;">
+            <button id="withdrawBNBButton" style="width: 120px; text-align: center;">Withdraw BNB</button>
+        </div>
+        <div>
+            <span id="walletBalanceUSDT"></span>
+            <input type="number" id="withdrawUSDTAmount" placeholder="Enter amount in USDT" style="width: 140px; text-align: center;">
+            <button id="withdrawUSDTButton" style="width: 120px; text-align: center;">Withdraw USDT</button>
+        </div>
+    </div>
+
+
+
+
+    <button class="button" onclick="getUSDTValue()">Get Pancake Swap USDT Value</button>
+    <button class="button" onclick="getBNBValue()">Get Pancake Swap BNB Value</button>
+    <div id="result" class="result"></div>
+
+
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/web3@1.6.1/dist/web3.min.js"></script>
+<script>
+// Initialize Web3.js
+        let web3;
+        let contract;
+        let contractAddress;
+        let contractABI;
+        let connectedWallet;
+        let formattedExpectedBNB;
+        let formattedExpectedUSDT;
+        let tradeMessage;
+
+        async function loadContractDetails() {
+            try {
+                const response = await fetch('./PumpitMAINNET.json');
+                const contractDetails = await response.json();
+                contractAddress = contractDetails.address;
+                contractABI = contractDetails.abi;
+                console.log(contractAddress);
+
+                initWeb3();
+            } catch (error) {
+                console.error("Error loading contract details:", error);
+            }
+            
+        }
+
+        async function initWeb3() {
+            if (window.ethereum) {
+                web3 = new Web3(window.ethereum);
+                await window.ethereum.request({ method: 'eth_requestAccounts' });
+                contract = new web3.eth.Contract(contractABI, contractAddress);
+                const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+                connectedWallet = accounts[0]; // The connected wallet address
+                
+                document.getElementById('walletAddressDisplay').innerText = `Wallet Address: ${connectedWallet}`;
+                console.log(contract);
+               updateInfo();
+            } else {
+                alert("Please install MetaMask!");
+            }
+        }
+
+        
+        
+        
+        async function updateInfo() {
+            document.getElementById('contractAddressDisplay').innerText = `Contract Address: ${contractAddress}`;
+
+
+            //-------------------------------------------------------------------------------get bnb contract balance----------------------------
+            const contractValueBNB = await contract.methods.getBNBBalance().call();
+            const formattedwalletvalueBNB = web3.utils.fromWei(contractValueBNB, 'ether');
+            const formattedContractValueBNB = (web3.utils.fromWei(contractValueBNB, 'ether') * 1).toFixed(5);
+            document.getElementById('walletBalanceBNB').innerText = `BNB in wallet: ${formattedContractValueBNB}`;
+            document.getElementById('walletBalanceBNB1').innerText = `${formattedContractValueBNB}`;
+            //-------------------------------------------------------------------------------get USDT contract balance----------------------------
+            const contractValueUSDT = await contract.methods.getUSDTBalance().call();
+            const formattedContractValueUSDT = (contractValueUSDT / 1e18).toFixed(2);
+            document.getElementById('walletBalanceUSDT').innerText = `USDT in wallet: ${formattedContractValueUSDT}`;
+            document.getElementById('walletBalanceUSDT1').innerText = `$${formattedContractValueUSDT}`;
+
+            //--------------------------------------------------------------------------------votes--------------------------------------
+           //  const influencePoints = await contract.methods.getVotePoints().call();
+           const influencePoints = await contract.methods.getInfluencePoints().call({ from: connectedWallet });
+            console.log(`influencePoints: ${influencePoints}`);
+            console.log(`connect wallet: ${connectedWallet}`);
+            document.getElementById('influencePoints').innerText = `${influencePoints}`;
+            
+           const votesNeeded = await contract.methods.getVotePointsRequired().call();
+           console.log(`Votes Needed: ${votesNeeded}`);
+           document.getElementById('votesNeeded').innerText = `${votesNeeded}`;
+            
+            const votesCurrent = await contract.methods.getCurrentVotes().call();
+            console.log(`Votes received: ${votesCurrent}`);
+            document.getElementById('votesCurrent').innerText = `${votesCurrent}`;
+
+           
+
+            //------------------------------------------------------------expected bnb usdt to receive for trade---------------------------
+            try {
+                const expectedBNB = await contract.methods.getExpectedBNBFromUSDT().call();
+               formattedExpectedBNB = (web3.utils.fromWei(expectedBNB, 'ether') * 1).toFixed(5);
+                console.log(`Expected BNB: ${web3.utils.fromWei(expectedBNB, 'ether')} BNB`);
+                document.getElementById('expectedBNB').innerText = `${formattedExpectedBNB}`;
+                console.log(`expected bnb:first ${formattedExpectedBNB}`);
+            } catch (error) {
+                //console.error("Error fetching expected BNB:", error);
+                console.log(`Not today buddy, you cant buy bnb with bnb you need some USDT`);
+                document.getElementById('expectedBNB').innerText = '0.00000';
+            }
+
+             
+            try {
+                const expectedUSDT = await contract.methods.getExpectedUSDTFromBNB().call();
+                 formattedExpectedUSDT = (expectedUSDT / 1e18).toFixed(4);                                                          //
+                console.log(`Expected USDT: ${web3.utils.fromWei(expectedUSDT, 'ether')} USDT`);
+                document.getElementById('expectedUSDT').innerText = ` $${formattedExpectedUSDT}`;
+                console.log(`expected usdt:first ${formattedExpectedUSDT}`);
+            } catch (error) {
+                //console.error("Error fetching expected USDT:", error);
+                console.log(`You dont have any BNB how do you expect to sell it for USDT`);
+                document.getElementById('expectedUSDT').innerText = ` $0.00`;
+            }
+
+            //----------------------------------------------------------------------------------Pancake BNB USDT value-------------------
+            
+            //------------------------------------------------------------------------------------------------buying usdt to bnb -----------------------------
+            const panCakeBNBvalue = await contract.methods.getBNBValue().call();
+            const formattedPanCakeBNBvalue =  (web3.utils.fromWei(panCakeBNBvalue, 'ether') * 1).toFixed(3);
+            document.getElementById('pancakeBNBvalue').innerText = `$${formattedPanCakeBNBvalue}`;
+            
+            //----------------------------------------------------------------------------selling BNB to usdt --------------------------------------------------
+          
+            const pancakeUSDTvalue = await contract.methods.getUSDTValue().call();
+            const formattedpancakeUSDTvalue = (pancakeUSDTvalue / 1e18).toFixed(4);                                                                         //
+            const roundItUp = (1 / formattedpancakeUSDTvalue)
+           // document.getElementById('pancakeUSDTvalue').innerText = `Sell ${formattedpancakeUSDTvalue} BNB for 1 USDT or 1 bnb = ${roundItUp} `;
+            document.getElementById('pancakeUSDTvalue').innerText = `$${(roundItUp).toFixed(3)} `;                                        //
+
+            
+
+            //----------------------------------------------------------------------------Previoustrade values-------------------------------------
+            const previousBNB = await contract.methods.getPreviousBNBAmount().call();
+             formattedPreviousBNB =  (web3.utils.fromWei(previousBNB, 'ether') * 1).toFixed(5);
+            console.log(`Previous BNB: ${formattedPreviousBNB}`);
+            document.getElementById('previousBNB').innerText = `${formattedPreviousBNB}`;
+
+            const previousUSDT = await contract.methods.getPreviousUSDTAmount().call();
+             formattedPreviousUSDT = (previousUSDT / 1e18).toFixed(2);                                                             //
+            console.log(`previous USDT: ${formattedPreviousUSDT}`);
+            document.getElementById('previousUSDT').innerText = `$${formattedPreviousUSDT}`;
+
+           //-------------------------------------------------------------------------------------------------initials--------------------------------------------------------------------
+            const initBNB = await contract.methods.initialBNBAmount().call();
+            const formattedInitBNB =  (web3.utils.fromWei(initBNB, 'ether') * 1).toFixed(5);
+            console.log(`init BNB: ${formattedInitBNB}`);
+            document.getElementById('InitPrevBNB').innerText = `Initial Value BNB ${formattedInitBNB} Pumped increase ${(formattedPreviousBNB - formattedInitBNB).toFixed(4) }`;
+            if (formattedInitBNB>0){
+                document.getElementById('InitPrevBNB').innerText = ` Pump start: ${formattedInitBNB} bnb, Topped up ${(formattedPreviousBNB - formattedInitBNB).toFixed(4) } bnb`;
+                document.getElementById('InitPrevBNB').style.color = 'green';
+            } else {
+                document.getElementById('InitPrevBNB').innerText = ` Pump start: ${formattedInitBNB} bnb, Leaked out ${(formattedPreviousBNB - formattedInitBNB).toFixed(4) } bnb`;
+                document.getElementById('InitPrevBNB').style.color = 'red';
+            }
+            //----------------Top Line ----Initial-----------------------------------------
+            document.getElementById('BNBinit').innerText = `${formattedInitBNB} bnb`;
+            document.getElementById('BNBinit').style.fontSize = '16px';
+            document.getElementById('BNBprevious').innerText = `${formattedPreviousBNB} bnb`;
+            document.getElementById('BNBprevious').style.fontSize = '16px';
+            
+
+            const initUSDT = await contract.methods.initialUSDTAmount().call();
+            const formattedInitUSDT = (initUSDT / 1e18).toFixed(2);                                       //
+            console.log(`init usdt: ${formattedInitUSDT}`);
+            if (formattedInitUSDT>0){
+                document.getElementById('InitPrevUSDT').innerText = ` Pump start: $${formattedInitUSDT} Topped up $${(formattedPreviousUSDT - formattedInitUSDT).toFixed(2) }`;
+                document.getElementById('InitPrevUSDT').style.color = 'green';
+            } else {
+                document.getElementById('InitPrevUSDT').innerText = ` Pump start: $${formattedInitUSDT} Leaked out $${(formattedPreviousUSDT - formattedInitUSDT).toFixed(2) }`;
+                document.getElementById('InitPrevUSDT').style.color = 'red';
+            }
+            //----------------Top Line ----Initial-----------------------------------------
+            document.getElementById('USDTinit').innerText = `$${formattedInitUSDT} usdt`;
+            document.getElementById('USDTinit').style.fontSize = '16px';
+            document.getElementById('USDTprevious').innerText = `$${formattedPreviousUSDT} usdt`;
+            document.getElementById('USDTprevious').style.fontSize = '16px';
+
+            document.getElementById('BNByield').innerText = `$${ (formattedPreviousBNB - formattedInitBNB).toFixed(5) } bnb`;
+            document.getElementById('BNByield').style.fontSize = '16px';
+            document.getElementById('USDTyield').innerText = `$${ (formattedPreviousUSDT - formattedInitUSDT).toFixed(2) } usdt`;                                    //
+            document.getElementById('USDTyield').style.fontSize = '16px';
+
+            //-----------------------------------------------------------------------------------Calculate it------------------------
+            const BNBprofitloss = (formattedExpectedBNB - formattedPreviousBNB);
+            const USDTprofitloss = (formattedExpectedUSDT - formattedPreviousUSDT);
+            const USDTpercentagePL = ((USDTprofitloss / formattedPreviousUSDT) * 100).toFixed(2);
+            
+                // Calculate USDT profit/loss
+                const formattedValue = parseFloat(USDTprofitloss).toFixed(2);                                             //
+                let tradeMessageUSDT = "";
+            if (USDTprofitloss >= 0) {
+                tradeMessageUSDT = `Good Trade (USD) - Profit Expected $${formattedExpectedUSDT} - ${formattedPreviousUSDT} = $${formattedValue}`;
+                tradeMessageUSDT = `Profit time, you can make $${formattedValue} ${USDTpercentagePL}% how far will you push it, money money`;
+                document.getElementById('nextTradeDetails').style.color = 'green';
+                document.getElementById('PrevExpectedUSDT').innerText = `You can make $${(formattedExpectedUSDT - formattedPreviousUSDT).toFixed(2)}usdt - on your $${formattedPreviousUSDT}`;
+                document.getElementById('nextTradeDetails').style.color = 'green';
+                console.log(`Trade Message (USD): ${tradeMessageUSDT}`);
+            } else {
+              //  tradeMessageUSDT = `Bad Trade (USD) - Loss Expected $${formattedExpectedUSDT} - ${formattedPreviousUSDT} = $${formattedValue} - ${USDTpercentagePL}%`;
+                tradeMessageUSDT = `You will loose $${formattedValue} ${USDTpercentagePL}% BAD trade, dont do it`;
+                document.getElementById('nextTradeDetails').style.color = 'yellow';
+                console.log(`Trade Message (USD): ${tradeMessageUSDT}`);
+                document.getElementById('PrevExpectedUSDT').innerText = `You're loosing $${(formattedExpectedUSDT - formattedPreviousUSDT).toFixed(2)} usdt on your Current holding $${formattedPreviousUSDT}`;
+                document.getElementById('PrevExpectedUSDT').style.color = 'yellow';
+            }
+
+            // Calculate BNB profit/loss
+            let tradeMessageBNB = "";
+            if (BNBprofitloss >= 0) {
+                tradeMessageBNB = `Good Trade (BNB) - Profit Expected ${formattedExpectedBNB} BNB - ${formattedPreviousBNB} BNB = ${BNBprofitloss}`;
+                document.getElementById('nextTradeDetails').style.color = 'green';
+                console.log(`Trade Message (BNB): ${tradeMessageBNB}`);
+                document.getElementById('PrevExpectedBNB').innerText = `You can make ${(formattedExpectedBNB - formattedPreviousBNB).toFixed(4)} bnb on your Current holding $${formattedPreviousBNB}`;
+                document.getElementById('PrevExpectedBNB').style.color = 'green';
+
+            } else {
+                tradeMessageBNB = `Bad Trade (BNB) - Loss Expected ${formattedExpectedBNB} BNB - ${formattedPreviousBNB} BNB = ${BNBprofitloss}`;
+                document.getElementById('nextTradeDetails').style.color = 'yellow';
+                console.log(`Trade Message (BNB): ${tradeMessageBNB}`);
+                document.getElementById('PrevExpectedBNB').innerText = `You're loosing ${(formattedExpectedBNB - formattedPreviousBNB).toFixed(4)} bnb on your Current holding $${formattedPreviousBNB}`;
+                document.getElementById('PrevExpectedBNB').style.color = 'yellow';
+
+            }
+          
+          
+          
+
+
+            // update some messages
+            
+            if (formattedContractValueBNB < formattedContractValueUSDT) {
+                // Buying BNB
+                document.getElementById('nextTrade').innerText = `Buying ${formattedExpectedBNB} BNB for $${formattedContractValueUSDT} USDT`;
+                document.getElementById('initBNB').innerText = tradeMessageBNB; // Use BNB trade message
+                document.getElementById('fadeSell').style.opacity = '0.2';
+                document.getElementById('fadeBuy').style.opacity = '1';
+           } else {
+                // Selling BNB
+                document.getElementById('nextTrade').innerText = `Selling ${formattedContractValueBNB} BNB for $${formattedExpectedUSDT} USDT`;
+                document.getElementById('initBNB').innerText = tradeMessageUSDT; // Use USDT trade message
+                document.getElementById('fadeSell').style.opacity = '1';
+                document.getElementById('fadeBuy').style.opacity = '0.2';
+            }
+            document.getElementById('nextTradeDetails').innerText = `${tradeMessageUSDT}`;
+            showResult(`Refreshed`);
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        async function updateRouter() {
+            const routerAddress = document.getElementById('routerAddress').value;
+            const accounts = await web3.eth.getAccounts();
+            await contract.methods.updateRouter(routerAddress).send({ from: accounts[0] });
+            showResult('Router updated successfully');
+        }
+
+        async function updateBNBAddress() {
+            const bnbAddress = document.getElementById('bnbAddress').value;
+            const accounts = await web3.eth.getAccounts();
+            await contract.methods.updateBNBAddress(bnbAddress).send({ from: accounts[0] });
+            showResult('BNB Address updated successfully');
+        }
+
+        async function updateUSDTAddress() {
+            const usdtAddress = document.getElementById('usdtAddress').value;
+            const accounts = await web3.eth.getAccounts();
+            await contract.methods.updateUSDTAddress(usdtAddress).send({ from: accounts[0] });
+            showResult('USDT Address updated successfully');
+        }
+        async function updatePUDUFOAddress() {
+            const pudufoAddress = document.getElementById('pudufoAddress').value;
+            const accounts = await web3.eth.getAccounts();
+            await contract.methods.updatePuDuFoAddress(pudufoAddress).send({ from: accounts[0] });
+            showResult('PUDUFO Address updated successfully');
+        }
+
+        //----------------------------------------------set influence points needed------------------------------------------------------
+        async function setVotePoints() {
+            const votePoints = document.getElementById('votePoints').value;
+            const accounts = await web3.eth.getAccounts();
+            await contract.methods.setVotePointsRequired(votePoints).send({ from: accounts[0] });
+            showResult(`Vote points set to ${votePoints}`);
+        }
+
+        async function addVote() {
+            const accounts = await web3.eth.getAccounts();
+            await contract.methods.addVote().send({ from: accounts[0] });
+            showResult('Vote added successfully');
+        }
+
+        async function revokeVote() {
+            const accounts = await web3.eth.getAccounts();
+            await contract.methods.revokeVote().send({ from: accounts[0] });
+            showResult('Vote revoked successfully');
+        }
+
+        async function getUSDTValue() {
+            const value = await contract.methods.getUSDTValue().call();
+            showResult(`1 BNB is worth ${value} USDT`);
+        }
+
+        async function getBNBValue() {
+            const value = await contract.methods.getBNBValue().call();
+            showResult(`1 USDT is worth ${value} BNB`);
+        }
+
+        //--------------------------------------------------message system-----------------------------------
+        function showResult(message) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = `<p class="success">${message}</p>`;
+        }
+
+
+
+//----------------------------------------------------------------------------------------------------------withdrawl----------------------
+        async function withdrawBNBFunds() {
+            const withdrawAmount = document.getElementById('withdrawBNBAmount').value;
+            if (!withdrawAmount || withdrawAmount <= 0) {
+                showResult("Please enter a valid withdrawal amount.", 'error');
+                return;
+            }
+            try {
+                // Convert Ether to Wei
+                const withdrawAmountInWei = web3.utils.toWei(withdrawAmount, 'ether');
+                const accounts = await web3.eth.getAccounts();
+                const owner = accounts[0];
+                // Send the transaction
+                await contract.methods.withdrawBNB(withdrawAmountInWei).send({ from: owner });
+                updateInfo();
+                showResult("Withdrawal successful!", 'success');
+            } catch (error) {
+                console.error("Error withdrawing funds:", error);
+                showResult("Transaction failed!", 'error');
+            }
+        }
+        async function withdrawUSDTFunds() {
+            const withdrawAmount = document.getElementById('withdrawUSDTAmount').value;
+            if (!withdrawAmount || withdrawAmount <= 0) {
+                showResult("Please enter a valid withdrawal amount.", 'error');
+                return;
+            }
+            try {
+                // Convert Ether to Wei
+                const withdrawAmountInWei = web3.utils.toWei(withdrawAmount, 'ether');
+                const accounts = await web3.eth.getAccounts();
+                const owner = accounts[0];
+                // Send the transaction
+                await contract.methods.withdrawUSDT(withdrawAmountInWei).send({ from: owner });
+                updateInfo();
+                showResult("Withdrawal successful!", 'success');
+            } catch (error) {
+                console.error("Error withdrawing funds:", error);
+                showResult("Transaction failed!", 'error');
+            }
+        }
+
+
+
+
+
+
+
+        document.getElementById('withdrawUSDTButton').addEventListener('click', withdrawUSDTFunds);
+        document.getElementById('withdrawBNBButton').addEventListener('click', withdrawBNBFunds);
+        loadContractDetails(); // Initialize when the page loads
+
+        setInterval(updateInfo, 10000);
+</script>
+
+</body>
+</html>
