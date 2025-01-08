@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pump Dump Trading Bot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            align-items: center;
+            text-align: center;
+        }
+        .groupingBox{
+            border: 4px;
+            border-radius: 8px;
+            background: rgb(184, 175, 243);
+            padding: 10px;
+            margin-bottom: 5px;
+
+        }
+        
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        .button {
+            padding: 10px 20px;
+            margin: 10px 0;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 50%;
+        }
+
+        .button:hover {
+            background-color: #0056b3;
+        }
+
+        .input-group {
+            margin: 10px 0;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .input-group input {
+            width: 50%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .result {
+            margin-top: 20px;
+            font-size: 16px;
+            color: #333;
+        }
+
+        .error {
+            color: red;
+        }
+
+        .success {
+            color: green;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>TradingBot ControlPanel</h1>
+   <span id="contractAddressDisplay">Contract Address not loaded</span>
+   <br>
+   <br>
+
+   <div class="groupingBox" style="font-weight: bold;">
+    <p id="walletBalanceBNB1">    </p>
+    <p id="walletBalanceUSDT1">   </p>
+    <p id="votesNeeded">          </p>
+    <p id="votesCurrent">         </p>
+    <p id="pancakeUSDTvalue">     </p>
+    <p id="pancakeBNBvalue">      </p>
+    <p>   </p>
+    <p>   </p>
+    <p>   </p>
+    <p>   </p>
+    <p>   </p>
+    <p>   </p>
+
+   
+   </div>
+
+
+
+
+    <div class="groupingBox">
+        <div class="input-group">
+            <label for="routerAddress">Router Address Testnet: 0xD99D1c33F9fC3444f8101754aBC46c52416550D1</label>
+            <input type="text" id="routerAddress" placeholder="Enter Router Address">
+        </div>
+        <button class="button" onclick="updateRouter()">Update Router</button>
+        <div class="input-group">
+            <label for="bnbAddress">BNB Address  Testnet: wBNB: 0xae13d989dac2f0debff460ac112a837c89baa7cd</label>
+            <input type="text" id="bnbAddress" placeholder="Enter BNB Address">
+        </div>
+        <button class="button" onclick="updateBNBAddress()">Update BNB Address</button>
+        <div class="input-group">
+            <label for="usdtAddress">USDT Address TestNet: 0x337610d27c682E347C9cD60BD4b3b107C9d34dDd</label>
+            <input type="text" id="usdtAddress" placeholder="Enter USDT Address">
+        </div>
+        <button class="button" onclick="updateUSDTAddress()">Update USDT Address</button>
+    </div>
+
+
+
+    <div class="groupingBox">
+        <div class="input-group">
+            <label for="votePoints">Set Vote Points</label>
+            <input type="number" id="votePoints" placeholder="Enter Vote Points">
+        </div>
+        <button class="button" onclick="setVotePoints()">Set Vote Points</button>
+        <button class="button" onclick="addVote()">Add Votes</button>
+        <button class="button" onclick="revokeVote()">Revoke Votes</button>
+    </div>
+
+    
+    
+    <div class="groupingBox">
+        <div>
+            <span id="walletBalanceBNB"></span>
+            <input type="number" id="withdrawBNBAmount" placeholder="Enter amount in BNB" style="width: 140px; text-align: center;">
+            <button id="withdrawBNBButton" style="width: 120px; text-align: center;">Withdraw BNB</button>
+        </div>
+        <div>
+            <span id="walletBalanceUSDT"></span>
+            <input type="number" id="withdrawUSDTAmount" placeholder="Enter amount in USDT" style="width: 140px; text-align: center;">
+            <button id="withdrawUSDTButton" style="width: 120px; text-align: center;">Withdraw USDT</button>
+        </div>
+    </div>
+
+
+
+
+    <button class="button" onclick="getUSDTValue()">Get Pancake Swap USDT Value</button>
+    <button class="button" onclick="getBNBValue()">Get Pancake Swap BNB Value</button>
+    <div id="result" class="result"></div>
+
+
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/web3@1.6.1/dist/web3.min.js"></script>
+<script>
+// Initialize Web3.js
+        let web3;
+        let contract;
+        let contractAddress;
+        let contractABI;
+
+        async function loadContractDetails() {
+            try {
+                const response = await fetch('./TradingBot.json');
+                const contractDetails = await response.json();
+                contractAddress = contractDetails.address;
+                contractABI = contractDetails.abi;
+                console.log(contractAddress);
+
+                initWeb3();
+            } catch (error) {
+                console.error("Error loading contract details:", error);
+            }
+            
+        }
+
+        async function initWeb3() {
+            if (window.ethereum) {
+                web3 = new Web3(window.ethereum);
+                await window.ethereum.request({ method: 'eth_requestAccounts' });
+                contract = new web3.eth.Contract(contractABI, contractAddress);
+                
+                console.log(contract);
+               updateInfo();
+            } else {
+                alert("Please install MetaMask!");
+            }
+        }
+
+        
+        
+        
+        async function updateInfo() {
+            document.getElementById('contractAddressDisplay').innerText = `Contract Address: ${contractAddress}`;
+
+
+            //-------------------------------------------------------------------------------get bnb wallet balance----------------------------
+            const walletvalueBNB = await contract.methods.getBNBBalance().call();
+            //const formattedwalletvalueBNB = web3.utils.fromWei(walletvalueBNB, 'ether');
+            const formattedwalletvalueBNB = (web3.utils.fromWei(walletvalueBNB, 'ether') * 1).toFixed(5);
+            document.getElementById('walletBalanceBNB').innerText = `BNB in wallet: ${formattedwalletvalueBNB}`;
+            document.getElementById('walletBalanceBNB1').innerText = `BNB in wallet: ${formattedwalletvalueBNB}`;
+            //-------------------------------------------------------------------------------get USDT wallet balance----------------------------
+            const walletvalueUSDT = await contract.methods.getUSDTBalance().call();
+            const formattedwalletvalueUSDT = (walletvalueUSDT / 1e18).toFixed(2);
+            document.getElementById('walletBalanceUSDT').innerText = `USDT in wallet: ${formattedwalletvalueUSDT}`;
+            document.getElementById('walletBalanceUSDT1').innerText = `USDT in wallet: ${formattedwalletvalueUSDT}`;
+
+            //--------------------------------------------------------------------------------votes--------------------------------------
+            const votesNeeded = await contract.methods.votePointsRequired().call();
+            document.getElementById('votesNeeded').innerText = `Votes needed to activate trade: ${votesNeeded}`;
+
+            const votesCurrent = await contract.methods.currentVotes().call();
+            document.getElementById('votesCurrent').innerText = `Votes received so far: ${votesCurrent}`;
+
+            //----------------------------------------------------------------------------------Pancake BNB USDT value-------------------
+            const pancakeUSDTvalue = await contract.methods.getUSDTValue().call();
+            const formattedpancakeUSDTvalue = (pancakeUSDTvalue / 1e18).toFixed(4);
+            const roundItUp = (1 / formattedpancakeUSDTvalue)
+            document.getElementById('pancakeUSDTvalue').innerText = `Sell ${formattedpancakeUSDTvalue} BNB for 1 USDT or 1 bnb = ${roundItUp} `;
+
+
+            const panCakeBNBvalue = await contract.methods.getBNBValue().call();
+            const formattedPanCakeBNBvalue =  (web3.utils.fromWei(panCakeBNBvalue, 'ether') * 1).toFixed(4);
+            document.getElementById('pancakeBNBvalue').innerText = `$${formattedPanCakeBNBvalue} USDT buys 1 BNB`;
+
+
+            showResult(`Refreshed`);
+        }
+
+
+
+
+        async function updateRouter() {
+            const routerAddress = document.getElementById('routerAddress').value;
+            const accounts = await web3.eth.getAccounts();
+            await contract.methods.updateRouter(routerAddress).send({ from: accounts[0] });
+            showResult('Router updated successfully');
+        }
+
+        async function updateBNBAddress() {
+            const bnbAddress = document.getElementById('bnbAddress').value;
+            const accounts = await web3.eth.getAccounts();
+            await contract.methods.updateBNBAddress(bnbAddress).send({ from: accounts[0] });
+            showResult('BNB Address updated successfully');
+        }
+
+        async function updateUSDTAddress() {
+            const usdtAddress = document.getElementById('usdtAddress').value;
+            const accounts = await web3.eth.getAccounts();
+            await contract.methods.updateUSDTAddress(usdtAddress).send({ from: accounts[0] });
+            showResult('USDT Address updated successfully');
+        }
+
+        async function setVotePoints() {
+            const votePoints = document.getElementById('votePoints').value;
+            const accounts = await web3.eth.getAccounts();
+            await contract.methods.setVotePointsRequired(votePoints).send({ from: accounts[0] });
+            showResult(`Vote points set to ${votePoints}`);
+        }
+
+        async function addVote() {
+            const accounts = await web3.eth.getAccounts();
+            await contract.methods.addVote().send({ from: accounts[0] });
+            showResult('Vote added successfully');
+        }
+
+        async function revokeVote() {
+            const accounts = await web3.eth.getAccounts();
+            await contract.methods.revokeVote().send({ from: accounts[0] });
+            showResult('Vote revoked successfully');
+        }
+
+        async function getUSDTValue() {
+            const value = await contract.methods.getUSDTValue().call();
+            showResult(`1 BNB is worth ${value} USDT`);
+        }
+
+        async function getBNBValue() {
+            const value = await contract.methods.getBNBValue().call();
+            showResult(`1 USDT is worth ${value} BNB`);
+        }
+
+        function showResult(message) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = `<p class="success">${message}</p>`;
+        }
+
+
+
+//----------------------------------------------------------------------------------------------------------withdrawl----------------------
+        async function withdrawBNBFunds() {
+            const withdrawAmount = document.getElementById('withdrawBNBAmount').value;
+            if (!withdrawAmount || withdrawAmount <= 0) {
+                showResult("Please enter a valid withdrawal amount.", 'error');
+                return;
+            }
+            try {
+                // Convert Ether to Wei
+                const withdrawAmountInWei = web3.utils.toWei(withdrawAmount, 'ether');
+                const accounts = await web3.eth.getAccounts();
+                const owner = accounts[0];
+                // Send the transaction
+                await contract.methods.withdrawBNB(withdrawAmountInWei).send({ from: owner });
+                updateInfo();
+                showResult("Withdrawal successful!", 'success');
+            } catch (error) {
+                console.error("Error withdrawing funds:", error);
+                showResult("Transaction failed!", 'error');
+            }
+        }
+        async function withdrawUSDTFunds() {
+            const withdrawAmount = document.getElementById('withdrawUSDTAmount').value;
+            if (!withdrawAmount || withdrawAmount <= 0) {
+                showResult("Please enter a valid withdrawal amount.", 'error');
+                return;
+            }
+            try {
+                // Convert Ether to Wei
+                const withdrawAmountInWei = web3.utils.toWei(withdrawAmount, 'ether');
+                const accounts = await web3.eth.getAccounts();
+                const owner = accounts[0];
+                // Send the transaction
+                await contract.methods.withdrawUSDT(withdrawAmountInWei).send({ from: owner });
+                updateInfo();
+                showResult("Withdrawal successful!", 'success');
+            } catch (error) {
+                console.error("Error withdrawing funds:", error);
+                showResult("Transaction failed!", 'error');
+            }
+        }
+
+
+
+
+
+
+
+        document.getElementById('withdrawUSDTButton').addEventListener('click', withdrawUSDTFunds);
+        document.getElementById('withdrawBNBButton').addEventListener('click', withdrawBNBFunds);
+        loadContractDetails(); // Initialize when the page loads
+
+        setInterval(updateInfo, 60000);
+</script>
+
+</body>
+</html>

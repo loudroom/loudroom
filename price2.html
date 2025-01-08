@@ -67,12 +67,33 @@
             <p id="tokensInCirculation">0</p>
         </div>
 
-        <!-- View & Withdraw Funds -->
+        <!-- Display & Withdraw Funds -->
         <div class="input-group">
             <label>Current Contract Balance (ETH):</label>
             <p id="contractBalance">0.00 ETH</p>
             <input type="number" id="withdrawAmount" placeholder="Enter amount to withdraw">
             <button id="withdrawFundsButton">Withdraw Funds</button>
+        </div>
+
+        <!-- Toggle Sell Lock -->
+        <div class="input-group">
+            <label>Toggle Sell Lock:</label>
+            <button id="toggleSellLockButton">Lock / Unlock Sell</button>
+            <!-- Added display for the current sell lock status -->
+            <p id="sellLockStatus">Sell Lock Status: Not Checked</p>
+        </div>
+
+        <!-- Buy Tokens Section -->
+        <div class="input-group">
+            <label>Enter number of tokens to buy:</label>
+            <input type="number" id="tokensToBuy" placeholder="Enter number of tokens">
+            <button id="buyTokensButton">Buy Tokens</button>
+
+            <input type="text" id="bnbAmount" placeholder="Enter BNB Amount" />
+            <button id="buyTokensButton">Buy Tokens</button>
+
+            
+
         </div>
     </div>
 
@@ -125,6 +146,7 @@
                 fetchTokenPrice();
                 fetchTokensInCirculation();
                 fetchContractBalance();
+                fetchSellLockStatus(); // Fetch sell lock status when wallet is connected
             } catch (error) {
                 console.error("Error connecting wallet:", error);
             }
@@ -192,48 +214,124 @@
             }
         }
 
-        // Withdraw Funds
-        async function withdrawFunds() {
-            const amount = document.getElementById("withdrawAmount").value;
-
-            // Check if the amount is empty or not a valid number
-            if (!amount || isNaN(amount) || parseFloat(amount) <= 0) {
-                alert("Please enter a valid amount greater than 0.");
-                return;
-            }
-
+        // Fetch Sell Lock Status
+        async function fetchSellLockStatus() {
             try {
-                // Convert amount to wei (in case it's in ether or BNB) before sending to the contract
-                const amountInWei = web3.utils.toWei(amount, 'ether');
-
-                // Check if the user has enough balance
-                const contractBalance = await web3.eth.getBalance(contractAddress);
-                if (parseFloat(web3.utils.fromWei(contractBalance, 'ether')) < parseFloat(amount)) {
-                    alert("Insufficient contract balance. Please check the balance and try again.");
-                    return;
-                }
-
-                // Send the withdrawal transaction
-                await contractInstance.methods.withdrawFunds(amountInWei).send({ from: userAccount });
-
-                alert("Funds withdrawn successfully.");
-                fetchContractBalance();
+                const sellLockStatus = await contractInstance.methods.isSellLocked().call();
+                const statusText = sellLockStatus ? "Locked" : "Unlocked";
+                document.getElementById("sellLockStatus").innerText = `Sell Lock Status: ${statusText}`;
             } catch (error) {
-                if (error.message.includes("insufficient funds")) {
-                    alert("Insufficient funds in the contract. Please check the contract balance.");
-                } else if (error.message.includes("revert")) {
-                    alert("Transaction failed. Please check the contract conditions and try again.");
-                } else {
-                    console.error("Error withdrawing funds:", error);
-                    alert("An error occurred while withdrawing funds. Please try again.");
-                }
+                console.error("Error fetching sell lock status:", error);
             }
         }
 
-        // Event Listeners
-        document.getElementById('connectWalletButton').addEventListener('click', connectWallet);
-        document.getElementById('updateTokenPriceButton').addEventListener('click', updateTokenPrice);
-        document.getElementById('withdrawFundsButton').addEventListener('click', withdrawFunds);
+
+
+
+
+
+
+
+        // Withdraw Funds
+        async function withdrawFunds() {
+    const amount = document.getElementById("withdrawAmount").value;
+
+    // Validate input
+    if (!amount || isNaN(amount) || parseFloat(amount) <= 0) {
+        alert("Please enter a valid amount greater than 0.");
+        return;
+    }
+
+    try {
+        // Convert the input amount to wei
+        const amountInWei = web3.utils.toWei(amount, 'ether');
+
+        // Send the transaction to withdraw funds
+        await contractInstance.methods.withdrawFunds(amountInWei).send({ from: userAccount });
+
+        alert(`Successfully withdrew ${amount} BNB.`);
+        fetchContractBalance(); // Refresh the displayed contract balance
+    } catch (error) {
+        if (error.message.includes("insufficient funds")) {
+            alert("Insufficient funds in the contract. Please check the balance.");
+        } else if (error.message.includes("revert")) {
+            alert("Transaction failed. Please check the contract conditions and try again.");
+        } else {
+            console.error("Error withdrawing funds:", error);
+            alert("An error occurred while withdrawing funds. Please try again.");
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+        // Toggle Sell Lock
+        async function toggleSellLock() {
+            try {
+                // Toggle the sell lock
+                const currentLockStatus = await contractInstance.methods.isSellLocked().call();
+                await contractInstance.methods.setSellLock(!currentLockStatus).send({ from: userAccount });
+                alert("Sell lock toggled successfully.");
+
+                // Refresh the sell lock status after toggling
+                fetchSellLockStatus();
+            } catch (error) {
+                console.error("Error toggling sell lock:", error);
+            }
+        }
+
+      
+      
+      
+      
+      
+        // Buy Tokens
+       // Buy Tokens
+async function buyTokens() {
+    const bnbAmountInput = document.getElementById("bnbAmount").value;
+
+    // Validate the BNB input
+    if (!bnbAmountInput || isNaN(bnbAmountInput) || parseFloat(bnbAmountInput) <= 0) {
+        alert("Please enter a valid BNB amount.");
+        return;
+    }
+
+    const bnbAmount = web3.utils.toWei(bnbAmountInput, 'ether'); // Convert to Wei for contract interaction
+
+    try {
+        // Log the BNB amount
+        console.log("BNB Amount to send: ", bnbAmount);
+
+        // Trigger the purchase with BNB
+        await contractInstance.methods.buyWithBNB().send({
+            from: userAccount,
+            value: bnbAmount
+        });
+
+        alert("Tokens purchased successfully.");
+        fetchTokensInCirculation();
+    } catch (error) {
+        console.error("Error purchasing tokens:", error);
+        alert(`Error purchasing tokens: ${error.message}`);
+    }
+}
+
+// Event Listeners
+document.getElementById('connectWalletButton').addEventListener('click', connectWallet);
+document.getElementById('updateTokenPriceButton').addEventListener('click', updateTokenPrice);
+document.getElementById('withdrawFundsButton').addEventListener('click', withdrawFunds);
+document.getElementById('toggleSellLockButton').addEventListener('click', toggleSellLock);
+document.getElementById('buyTokensButton').addEventListener('click', buyTokens); // This is now correctly hooked
+
     </script>
 </body>
 </html>
+
+
+
