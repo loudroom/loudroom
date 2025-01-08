@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Contract Interaction</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.10.0/web3.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #4caf50;
+            --secondary-color: #f1f1f1;
+            --text-color: #333;
+            --button-hover: #45a049;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--secondary-color);
+            color: var(--text-color);
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        header h1 {
+            color: var(--primary-color);
+        }
+
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: var(--button-hover);
+        }
+
+        main {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        section {
+            margin-bottom: 20px;
+        }
+
+        .action {
+            margin-bottom: 15px;
+        }
+
+        .action label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input {
+            width: calc(100% - 120px);
+            padding: 8px;
+            border: 1px solid var(--secondary-color);
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.9em;
+            color: var(--text-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Smart Contract Dashboard</h1>
+            <button id="connectWalletButton">Connect Wallet</button>
+            <p id="walletAddress">Wallet Address: Not Connected</p>
+            <p id="contractAddress">Contract Address: Not Available</p> <!-- Added contract address field -->
+        </header>
+
+        <main>
+            <section class="actions">
+                <h2>Buy Tokens</h2>
+                <div class="action">
+                    <label for="tokenAmount">Amount of Tokens:</label>
+                    <input type="number" id="tokenAmount" placeholder="Enter token amount">
+                </div>
+                <div class="action">
+                    <label for="bnbAmount">Amount of BNB:</label>
+                    <input type="number" id="bnbAmount" placeholder="Enter BNB amount">
+                </div>
+                <div class="action">
+                    <button id="buyTokensButton">Buy Tokens</button>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>&copy; 2024 Smart Contract Dashboard</p>
+        </footer>
+    </div>
+
+    <script type="module">
+        let web3;
+        let userAccount;
+        let contractInstance;
+
+        let contractAddress;
+        let contractABI;
+
+        async function loadContractDetails() {
+            try {
+                const response = await fetch('./contractDetails.json');
+                if (!response.ok) {
+                    throw new Error("Failed to load contractDetails.json");
+                }
+                const contractDetails = await response.json();
+                contractAddress = contractDetails.address;
+                contractABI = contractDetails.abi;
+
+                // Display contract address on the page
+                document.getElementById("contractAddress").innerText = `Contract Address: ${contractAddress}`;
+            } catch (error) {
+                console.error("Error loading contract details:", error);
+            }
+        }
+
+        async function connectWallet() {
+            if (typeof window.ethereum === "undefined") {
+                alert("MetaMask is not installed. Please install MetaMask.");
+                return;
+            }
+
+            try {
+                web3 = new Web3(window.ethereum);
+                contractInstance = new web3.eth.Contract(contractABI, contractAddress);
+
+                const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+                userAccount = accounts[0];
+                document.getElementById("walletAddress").innerText = `Wallet Address: ${userAccount}`;
+            } catch (error) {
+                console.error("Error connecting wallet:", error);
+            }
+        }
+
+
+
+
+
+        async function buyTokens() {
+    const tokenAmount = document.getElementById("tokenAmount").value;
+    const bnbAmount = document.getElementById("bnbAmount").value;
+
+    if (!tokenAmount || isNaN(tokenAmount) || tokenAmount <= 0) {
+        alert("Please enter a valid token amount.");
+        return;
+    }
+
+    if (!bnbAmount || isNaN(bnbAmount) || bnbAmount <= 0) {
+        alert("Please enter a valid BNB amount.");
+        return;
+    }
+
+    try {
+        // Convert BNB to Wei for the transaction
+        const weiAmount = web3.utils.toWei(bnbAmount, 'ether');
+
+        // Convert the user-entered token amount to account for the decimals (18 decimals assumed)
+        const adjustedTokenAmount = web3.utils.toBN(tokenAmount).mul(web3.utils.toBN(10).pow(web3.utils.toBN(0)));
+
+        // Log the adjusted token amount for debugging
+        console.log(`Adjusted token amount (in tokens): ${adjustedTokenAmount.toString()}`);
+
+        // Call the buyWithTokens function from the smart contract
+        await contractInstance.methods.buyWithTokens(adjustedTokenAmount.toString()).send({
+            from: userAccount,
+            value: weiAmount,
+            gas: 210000,
+            gasPrice: await web3.eth.getGasPrice()
+        });
+
+        alert("Tokens purchased successfully.");
+    } catch (error) {
+        console.error("Error purchasing tokens:", error);
+        alert("An error occurred while purchasing tokens.");
+    }
+}
+
+
+
+
+
+
+
+
+        document.getElementById("connectWalletButton").addEventListener("click", connectWallet);
+        document.getElementById("buyTokensButton").addEventListener("click", buyTokens);
+
+        loadContractDetails();
+    </script>
+</body>
+</html>
+
+
+

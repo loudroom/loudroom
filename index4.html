@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Contract Interaction</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.10.0/web3.min.js"></script>
+    <style>
+      /* styles.css */
+
+:root {
+    --primary-color: #4caf50;
+    --secondary-color: #f1f1f1;
+    --text-color: #333;
+    --button-hover: #45a049;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: var(--secondary-color);
+    color: var(--text-color);
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+header h1 {
+    color: var(--primary-color);
+}
+
+button {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: var(--button-hover);
+}
+
+main {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+    color: var(--primary-color);
+    margin-bottom: 10px;
+}
+
+section {
+    margin-bottom: 20px;
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 0;
+    border-bottom: 1px solid var(--secondary-color);
+}
+
+.info-row label {
+    font-weight: bold;
+}
+
+.info-row span {
+    font-weight: normal;
+}
+
+.actions .action {
+    margin-bottom: 15px;
+}
+
+.actions label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+input {
+    width: calc(100% - 120px);
+    padding: 8px;
+    border: 1px solid var(--secondary-color);
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+footer {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 0.9em;
+    color: var(--text-color);
+}
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Smart Contract Dashboard</h1>
+            <button id="connectWalletButton">Connect Wallet</button>
+            <p id="walletAddress">Wallet Address: Not Connected</p>
+        </header>
+
+        <main>
+            <section class="contract-info">
+                <h2>Contract Details</h2>
+                <p id="contractDetails">Loading contract details...</p>
+            </section>
+
+            <section class="token-info">
+                <h2>Token Information</h2>
+                <div class="info-row">
+                    <label>Token Price (USD):</label>
+                    <span id="tokenPriceDisplay">Loading...</span>
+                </div>
+                <div class="info-row">
+                    <label>Total Tokens in Circulation:</label>
+                    <span id="tokensInCirculation">Loading...</span>
+                </div>
+                <div class="info-row">
+                    <label>Contract Balance:</label>
+                    <span id="contractBalance">Loading...</span>
+                </div>
+                <div class="info-row">
+                    <label>Sell Lock Status:</label>
+                    <span id="sellLockStatus">Loading...</span>
+                </div>
+            </section>
+
+            <section class="actions">
+                <h2>Actions</h2>
+                <div class="action">
+                    <label for="newTokenPrice">Update Token Price (USD):</label>
+                    <input type="number" id="newTokenPrice" placeholder="Enter new price in USD">
+                    <button id="updateTokenPriceButton">Update Price</button>
+                </div>
+                <div class="action">
+                    <button id="toggleSellLockButton">Toggle Sell Lock</button>
+                </div>
+                <div class="action">
+                    <label for="tokenAmount">Buy Tokens:</label>
+                    <input type="number" id="tokenAmount" placeholder="Enter token amount">
+                    <button id="buyTokensButton">Buy Tokens</button>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>&copy; 2024 Smart Contract Dashboard</p>
+        </footer>
+    </div>
+   
+
+    <script type="module">
+        let web3;
+        let userAccount;
+        let contractInstance;
+    
+        let contractAddress;
+        let contractABI;
+    
+        // Load contract details
+        async function loadContractDetails() {
+            try {
+                const response = await fetch('./contractDetails.json');
+                if (!response.ok) {
+                    throw new Error("Failed to load contractDetails.json");
+                }
+                const contractDetails = await response.json();
+                contractAddress = contractDetails.address;
+                contractABI = contractDetails.abi;
+            } catch (error) {
+                console.error("Error loading contract details:", error);
+            }
+        }
+    
+        // Connect Wallet
+        async function connectWallet() {
+            if (typeof window.ethereum === "undefined") {
+                alert("MetaMask is not installed. Please install MetaMask.");
+                return;
+            }
+    
+            try {
+                web3 = new Web3(window.ethereum);
+                contractInstance = new web3.eth.Contract(contractABI, contractAddress);
+    
+                const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+                userAccount = accounts[0];
+                document.getElementById("walletAddress").innerText = `Wallet Address: ${userAccount}`;
+    
+                fetchContractData();
+            } catch (error) {
+                console.error("Error connecting wallet:", error);
+            }
+        }
+    
+        // Fetch and Display Contract Data
+        async function fetchContractData() {
+            try {
+                fetchContractName();
+                fetchTokenPrice();
+                fetchTokensInCirculation();
+                fetchContractBalance();
+                fetchSellLockStatus();
+            } catch (error) {
+                console.error("Error fetching contract data:", error);
+            }
+        }
+    
+        // Fetch Contract Name
+        async function fetchContractName() {
+            try {
+                const name = await contractInstance.methods.name().call();
+                document.getElementById("contractDetails").innerText = `Contract Name: ${name}\nContract Address: ${contractAddress}`;
+            } catch (error) {
+                console.error("Error fetching contract name:", error);
+            }
+        }
+    
+        // Fetch Token Price
+        async function fetchTokenPrice() {
+            try {
+                const priceInWei = await contractInstance.methods.tokenPriceUSD().call();
+                const priceInUSD = parseFloat(web3.utils.fromWei(priceInWei, 'ether')) / 100; // Convert cents to USD
+                document.getElementById("tokenPriceDisplay").innerText = `$${priceInUSD.toFixed(2)}`;
+            } catch (error) {
+                console.error("Error fetching token price:", error);
+            }
+        }
+    
+        // Update Token Price
+        async function updateTokenPrice() {
+            const newPrice = document.getElementById("newTokenPrice").value;
+            if (!newPrice || isNaN(newPrice)) {
+                alert("Please enter a valid price.");
+                return;
+            }
+    
+            try {
+                const priceInWei = BigInt(newPrice) * BigInt(10 ** 16); // Convert to wei
+                await contractInstance.methods.updateTokenPrice(priceInWei.toString()).send({ from: userAccount });
+                alert("Token price updated successfully.");
+                fetchTokenPrice();
+            } catch (error) {
+                console.error("Error updating token price:", error);
+            }
+        }
+    
+        // Fetch Total Tokens in Circulation
+        async function fetchTokensInCirculation() {
+            try {
+                const totalSupply = await contractInstance.methods.totalSupply().call();
+                document.getElementById("tokensInCirculation").innerText = totalSupply;
+            } catch (error) {
+                console.error("Error fetching tokens in circulation:", error);
+            }
+        }
+    
+        // Fetch Contract Balance
+        async function fetchContractBalance() {
+            try {
+                const balance = await web3.eth.getBalance(contractAddress);
+                document.getElementById("contractBalance").innerText = `${web3.utils.fromWei(balance, 'ether')} ETH`;
+            } catch (error) {
+                console.error("Error fetching contract balance:", error);
+            }
+        }
+    
+        // Fetch Sell Lock Status
+        async function fetchSellLockStatus() {
+            try {
+                const isLocked = await contractInstance.methods.isSellLocked().call();
+                document.getElementById("sellLockStatus").innerText = `Sell Lock Status: ${isLocked ? 'Locked' : 'Unlocked'}`;
+            } catch (error) {
+                console.error("Error fetching sell lock status:", error);
+            }
+        }
+    
+        // Toggle Sell Lock
+        async function toggleSellLock() {
+            try {
+                const currentLockStatus = await contractInstance.methods.isSellLocked().call();
+                await contractInstance.methods.setSellLock(!currentLockStatus).send({ from: userAccount });
+                alert("Sell lock toggled successfully.");
+                fetchSellLockStatus();
+            } catch (error) {
+                console.error("Error toggling sell lock:", error);
+            }
+        }
+    
+        // Buy Tokens
+        async function buyTokens() {
+            const tokenAmount = parseFloat(document.getElementById("tokenAmount").value);
+    
+            if (!tokenAmount || isNaN(tokenAmount) || tokenAmount <= 0) {
+                alert("Please enter a valid token amount.");
+                return;
+            }
+    
+            try {
+                const bnbPrice = await contractInstance.methods.getBNBPrice().call();
+                const tokenPrice = await contractInstance.methods.tokenPriceUSD().call();
+    
+                const totalUSD = BigInt(tokenPrice) * BigInt(tokenAmount) * BigInt(10 ** 16); // Convert price to USD
+                const totalBNB = totalUSD * BigInt(10 ** 18) / BigInt(bnbPrice); // Convert USD to BNB
+    
+                await contractInstance.methods.buyWithTokens(tokenAmount).send({
+                    from: userAccount,
+                    value: totalBNB.toString(),
+                    gas: 200000
+                });
+    
+                alert("Tokens purchased successfully.");
+                fetchContractData();
+            } catch (error) {
+                console.error("Error buying tokens:", error);
+            }
+        }
+    
+        // Event Listeners
+        document.getElementById("connectWalletButton").addEventListener("click", connectWallet);
+        document.getElementById("updateTokenPriceButton").addEventListener("click", updateTokenPrice);
+        document.getElementById("toggleSellLockButton").addEventListener("click", toggleSellLock);
+        document.getElementById("buyTokensButton").addEventListener("click", buyTokens);
+    
+        // Load contract details on page load
+        loadContractDetails();
+    </script>
+    
+</body>
+</html>
+

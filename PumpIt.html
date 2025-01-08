@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pump It MAINNET</title>
+    <title>Pump It</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -89,18 +89,18 @@
 
 
         .metalBackground {
-            background: linear-gradient(135deg, 
-        /* BNB gold  #f3ba2f, 
-            #f0a620, 
-            #f6ac35, 
-            #d4830e, 
-            #c67108);*/
-                #5b2ce9,  /* Light silver */
-                #2a34e9,
-                #438ce3,
-                #223ac2,
-                #213edf  
-            );
+    background: linear-gradient(135deg, 
+   /* BNB gold  #f3ba2f, 
+    #f0a620, 
+    #f6ac35, 
+    #d4830e, 
+    #c67108);*/
+       #5b2ce9,  /* Light silver */
+        #2a34e9,
+        #438ce3,
+        #223ac2,
+        #213edf  
+    );
     background-size: 200% 200%;
     animation: shine 30s infinite;
     width: 500px;
@@ -164,12 +164,12 @@
         <div style="display: flex; flex-direction: row; width: 95%; padding: 5px; gap: 5px;">
             <div class="centerText" style="flex: 1;">
                 Principal<br>
-                <span id="BNBinit" style="color:#438ce3; font-size: 22px;"> BNB principal </span><br>
+                <span id="BNBinit" style="color:#438ce3; font-size: 22px;"> BNB principal </span>
                 <span id="USDTinit" style="color:#438ce3; font-size: 22px;"> USDT pricipal </span>
             </div>
             <div class="centerText" style="flex: 1;">
                 Previous Trade<br>
-                <span id="BNBprevious" style="color:#438ce3; font-size: 22px;"> BNB previous </span><br>
+                <span id="BNBprevious" style="color:#438ce3; font-size: 22px;"> BNB previous </span>
                 <span id="USDTprevious" style="color:#438ce3; font-size: 22px;"> USDT previous </span>
             </div>    
             <div class="centerText" style="flex: 1;">
@@ -258,31 +258,6 @@
         </div>
         </div>
 
-        <!-- TradingView Widget BEGIN -->
-<div class="tradingview-widget-container">
-    <div class="tradingview-widget-container__widget"></div>
-    <div class="tradingview-widget-copyright"><a href="https://www.tradingview.com/" rel="noopener nofollow" target="_blank"><span class="blue-text">Track all markets on TradingView</span></a></div>
-    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
-    {
-    "width": "510",
-    "height": "400",
-    "symbol": "BINANCE:BNBUSD",
-    "interval": "W",
-    "timezone": "exchange",
-    "theme": "dark",
-    "style": "1",
-    "locale": "en",
-    "gridColor": "rgba(224, 102, 102, 0.06)",
-    "allow_symbol_change": true,
-    "calendar": false,
-    "support_host": "https://www.tradingview.com"
-  }
-    </script>
-  </div>
-  <!-- TradingView Widget END -->
-
-
-
 
     </div>
 
@@ -297,7 +272,7 @@
 
 
 <div class="container">
-    <h1>TradingBot MAIN NET ControlPanel</h1>
+    <h1>TradingBot ControlPanel</h1>
    <span id="walletAddressDisplay">Contract Address not loaded</span>
    <br>
    <br>
@@ -338,36 +313,22 @@
         <button class="button" onclick="updateBNBAddress()">Update BNB Address</button>
         <div class="input-group">
             <label for="usdtAddress">USDT Address TestNet: 0x337610d27c682E347C9cD60BD4b3b107C9d34dDd</label><br>
-            <label for="usdtAddress">Eth Address TestNet: 0xd66c6B4F0be8CE5b39D52E0Fd1344c389929B378</label><br>
-            <br>
-            <label for="usdtAddress">Eth Address Mainnet: 0x4DB5a66E937A9F4473fA95b1cAF1d1E1D62E29EA</label><br>
-            <label for="usdtAddress">DOT Address Mainnet: 0x7083609fCE4d1d8Dc0C979AAb8c869Ea2C873402</label><br>
-         
-            
-
+            <label for="usdtAddress">Eth Address TestNet: 0xd66c6B4F0be8CE5b39D52E0Fd1344c389929B378</label>
+               
             <input type="text" id="usdtAddress" placeholder="Enter USDT Address">
         </div>
         <button class="button" onclick="updateUSDTAddress()">Update USDT Address</button>
-        
-        <div class="input-group">
-            <label for="usdtAddress">PUDUFO Address TestNet: 0x82c786aDdc797C0CaA192Ccf1f5aB5E224a4acAf</label><br>
-            <input type="text" id="pudufoAddress" placeholder="Enter PUDUFO Address">
-        </div>
-        <button class="button" onclick="updatePUDUFOAddress()">Update USDT Address</button>
-
-
-
     </div>
 
 
 
     <div class="groupingBox">
         <div class="input-group">
-            <label for="votePoints">Set Influence Points</label>
+            <label for="votePoints">Set Vote Points</label>
             <input type="number" id="votePoints" placeholder="Enter Vote Points">
         </div>
-        <button class="button" onclick="setVotePoints()">Set Influence Points</button>
-      
+        <button class="button" onclick="setVotePoints()">Set Vote Points</button>
+       
     </div>
 
     
@@ -410,7 +371,7 @@
 
         async function loadContractDetails() {
             try {
-                const response = await fetch('./PumpitMAINNET.json');
+                const response = await fetch('./TradingBot.json');
                 const contractDetails = await response.json();
                 contractAddress = contractDetails.address;
                 contractABI = contractDetails.abi;
@@ -454,15 +415,14 @@
             document.getElementById('walletBalanceBNB1').innerText = `${formattedContractValueBNB}`;
             //-------------------------------------------------------------------------------get USDT contract balance----------------------------
             const contractValueUSDT = await contract.methods.getUSDTBalance().call();
-            const formattedContractValueUSDT = (contractValueUSDT / 1e18).toFixed(4);
+            const formattedContractValueUSDT = (contractValueUSDT / 1e18).toFixed(2);
             document.getElementById('walletBalanceUSDT').innerText = `USDT in wallet: ${formattedContractValueUSDT}`;
             document.getElementById('walletBalanceUSDT1').innerText = `$${formattedContractValueUSDT}`;
 
             //--------------------------------------------------------------------------------votes--------------------------------------
            //  const influencePoints = await contract.methods.getVotePoints().call();
-           const influencePoints = await contract.methods.getInfluencePoints().call({ from: connectedWallet });
+           const influencePoints = await contract.methods.getVotePoints().call();
             console.log(`influencePoints: ${influencePoints}`);
-            console.log(`connect wallet: ${connectedWallet}`);
             document.getElementById('influencePoints').innerText = `${influencePoints}`;
             
            const votesNeeded = await contract.methods.getVotePointsRequired().call();
@@ -491,7 +451,7 @@
              
             try {
                 const expectedUSDT = await contract.methods.getExpectedUSDTFromBNB().call();
-                 formattedExpectedUSDT = (expectedUSDT / 1e18).toFixed(4);                                                          //
+                 formattedExpectedUSDT = (expectedUSDT / 1e18).toFixed(2);                                                          //
                 console.log(`Expected USDT: ${web3.utils.fromWei(expectedUSDT, 'ether')} USDT`);
                 document.getElementById('expectedUSDT').innerText = ` $${formattedExpectedUSDT}`;
                 console.log(`expected usdt:first ${formattedExpectedUSDT}`);
@@ -502,21 +462,16 @@
             }
 
             //----------------------------------------------------------------------------------Pancake BNB USDT value-------------------
-            
-            //------------------------------------------------------------------------------------------------selling bnb to usdt -----------------------------
-            const panCakeBNBvalue = await contract.methods.getBNBValue().call();
-            const formattedPanCakeBNBvalue =  (web3.utils.fromWei(panCakeBNBvalue, 'ether') * 1).toFixed(3);
-            document.getElementById('pancakeBNBvalue').innerText = `$${formattedPanCakeBNBvalue}`;
-            
-            //----------------------------------------------------------------------------buying BNB to usdt --------------------------------------------------
-          
             const pancakeUSDTvalue = await contract.methods.getUSDTValue().call();
-            const formattedpancakeUSDTvalue = (pancakeUSDTvalue / 1e18).toFixed(4);                                                                         //
+            const formattedpancakeUSDTvalue = (pancakeUSDTvalue / 1e18).toFixed(2);                                                                         //
             const roundItUp = (1 / formattedpancakeUSDTvalue)
            // document.getElementById('pancakeUSDTvalue').innerText = `Sell ${formattedpancakeUSDTvalue} BNB for 1 USDT or 1 bnb = ${roundItUp} `;
-            document.getElementById('pancakeUSDTvalue').innerText = `$${(roundItUp).toFixed(3)} `;                                        //
+            document.getElementById('pancakeUSDTvalue').innerText = `$${(roundItUp).toFixed(2)} `;                                        //
 
-            
+
+            const panCakeBNBvalue = await contract.methods.getBNBValue().call();
+            const formattedPanCakeBNBvalue =  (web3.utils.fromWei(panCakeBNBvalue, 'ether') * 1).toFixed(4);
+            document.getElementById('pancakeBNBvalue').innerText = `$${formattedPanCakeBNBvalue}`;
 
             //----------------------------------------------------------------------------Previoustrade values-------------------------------------
             const previousBNB = await contract.methods.getPreviousBNBAmount().call();
@@ -525,7 +480,7 @@
             document.getElementById('previousBNB').innerText = `${formattedPreviousBNB}`;
 
             const previousUSDT = await contract.methods.getPreviousUSDTAmount().call();
-             formattedPreviousUSDT = (previousUSDT / 1e18).toFixed(4);                                                             //
+             formattedPreviousUSDT = (previousUSDT / 1e18).toFixed(2);                                                             //
             console.log(`previous USDT: ${formattedPreviousUSDT}`);
             document.getElementById('previousUSDT').innerText = `$${formattedPreviousUSDT}`;
 
@@ -549,13 +504,13 @@
             
 
             const initUSDT = await contract.methods.initialUSDTAmount().call();
-            const formattedInitUSDT = (initUSDT / 1e18).toFixed(4);                                       //
+            const formattedInitUSDT = (initUSDT / 1e18).toFixed(2);                                       //
             console.log(`init usdt: ${formattedInitUSDT}`);
             if (formattedInitUSDT>0){
-                document.getElementById('InitPrevUSDT').innerText = ` Pump start: $${formattedInitUSDT} Topped up $${(formattedPreviousUSDT - formattedInitUSDT).toFixed(4) }`;
+                document.getElementById('InitPrevUSDT').innerText = ` Pump start: $${formattedInitUSDT} Topped up $${(formattedPreviousUSDT - formattedInitUSDT).toFixed(2) }`;
                 document.getElementById('InitPrevUSDT').style.color = 'green';
             } else {
-                document.getElementById('InitPrevUSDT').innerText = ` Pump start: $${formattedInitUSDT} Leaked out $${(formattedPreviousUSDT - formattedInitUSDT).toFixed(4) }`;
+                document.getElementById('InitPrevUSDT').innerText = ` Pump start: $${formattedInitUSDT} Leaked out $${(formattedPreviousUSDT - formattedInitUSDT).toFixed(2) }`;
                 document.getElementById('InitPrevUSDT').style.color = 'red';
             }
             //----------------Top Line ----Initial-----------------------------------------
@@ -564,24 +519,24 @@
             document.getElementById('USDTprevious').innerText = `$${formattedPreviousUSDT} usdt`;
             document.getElementById('USDTprevious').style.fontSize = '16px';
 
-            document.getElementById('BNByield').innerText = `${ (formattedPreviousBNB - formattedInitBNB).toFixed(5) } bnb`;
+            document.getElementById('BNByield').innerText = `$${ (formattedPreviousBNB - formattedInitBNB).toFixed(5) } bnb`;
             document.getElementById('BNByield').style.fontSize = '16px';
-            document.getElementById('USDTyield').innerText = `$${ (formattedPreviousUSDT - formattedInitUSDT).toFixed(4) } usdt`;                                    //
+            document.getElementById('USDTyield').innerText = `$${ (formattedPreviousUSDT - formattedInitUSDT).toFixed(2) } usdt`;                                    //
             document.getElementById('USDTyield').style.fontSize = '16px';
 
             //-----------------------------------------------------------------------------------Calculate it------------------------
             const BNBprofitloss = (formattedExpectedBNB - formattedPreviousBNB);
             const USDTprofitloss = (formattedExpectedUSDT - formattedPreviousUSDT);
-            const USDTpercentagePL = ((USDTprofitloss / formattedPreviousUSDT) * 100).toFixed(4);
+            const USDTpercentagePL = ((USDTprofitloss / formattedPreviousUSDT) * 100).toFixed(2);
             
                 // Calculate USDT profit/loss
-                const formattedValue = parseFloat(USDTprofitloss).toFixed(4);                                             //
+                const formattedValue = parseFloat(USDTprofitloss).toFixed(2);                                             //
                 let tradeMessageUSDT = "";
             if (USDTprofitloss >= 0) {
                 tradeMessageUSDT = `Good Trade (USD) - Profit Expected $${formattedExpectedUSDT} - ${formattedPreviousUSDT} = $${formattedValue}`;
                 tradeMessageUSDT = `Profit time, you can make $${formattedValue} ${USDTpercentagePL}% how far will you push it, money money`;
                 document.getElementById('nextTradeDetails').style.color = 'green';
-                document.getElementById('PrevExpectedUSDT').innerText = `You can make $${(formattedExpectedUSDT - formattedPreviousUSDT).toFixed(4)}usdt - on your $${formattedPreviousUSDT}`;
+                document.getElementById('PrevExpectedUSDT').innerText = `You can make $${(formattedExpectedUSDT - formattedPreviousUSDT).toFixed(2)}usdt - on your $${formattedPreviousUSDT}`;
                 document.getElementById('nextTradeDetails').style.color = 'green';
                 console.log(`Trade Message (USD): ${tradeMessageUSDT}`);
             } else {
@@ -589,7 +544,7 @@
                 tradeMessageUSDT = `You will loose $${formattedValue} ${USDTpercentagePL}% BAD trade, dont do it`;
                 document.getElementById('nextTradeDetails').style.color = 'yellow';
                 console.log(`Trade Message (USD): ${tradeMessageUSDT}`);
-                document.getElementById('PrevExpectedUSDT').innerText = `You're loosing $${(formattedExpectedUSDT - formattedPreviousUSDT).toFixed(4)} usdt on your Current holding $${formattedPreviousUSDT}`;
+                document.getElementById('PrevExpectedUSDT').innerText = `You're loosing $${(formattedExpectedUSDT - formattedPreviousUSDT).toFixed(2)} usdt on your Current holding $${formattedPreviousUSDT}`;
                 document.getElementById('PrevExpectedUSDT').style.color = 'yellow';
             }
 
@@ -674,14 +629,7 @@
             await contract.methods.updateUSDTAddress(usdtAddress).send({ from: accounts[0] });
             showResult('USDT Address updated successfully');
         }
-        async function updatePUDUFOAddress() {
-            const pudufoAddress = document.getElementById('pudufoAddress').value;
-            const accounts = await web3.eth.getAccounts();
-            await contract.methods.updatePuDuFoAddress(pudufoAddress).send({ from: accounts[0] });
-            showResult('PUDUFO Address updated successfully');
-        }
 
-        //----------------------------------------------set influence points needed------------------------------------------------------
         async function setVotePoints() {
             const votePoints = document.getElementById('votePoints').value;
             const accounts = await web3.eth.getAccounts();
@@ -711,7 +659,6 @@
             showResult(`1 USDT is worth ${value} BNB`);
         }
 
-        //--------------------------------------------------message system-----------------------------------
         function showResult(message) {
             const resultDiv = document.getElementById('result');
             resultDiv.innerHTML = `<p class="success">${message}</p>`;

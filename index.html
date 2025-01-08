@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="favicon.png" type="head.png">
   <title>Pump and Dump Trading</title>
 	  <link rel="stylesheet" href="flexbox-styles.css">
 	  <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
@@ -170,7 +171,11 @@
 
 	  <div class="width100">
       	<div class="width50 graph">  fuck 1 </div>
-		<div class="width50 graph">  fuck 2 </div>  
+		
+		
+		<div class="width50 graph">  fuck 2 
+			<p id="tokenPriceDisplay">$0.00</p>
+		</div>  
       </div>
 	 
 	  
@@ -179,53 +184,88 @@
 
 	  <!-----------------------    Dash Board   -------------------------->
 	<div id="DASHBOARD" class="dashboard-container graph">
-    	<h1>Pre-Order Dashboard</h1>
+    	<h1>Pump and Dump Tokenboard</h1>
 		
-		<!-- -------------------------PuDuTo Wallet balance --------------------------------------------------->
+		
+
+
+
+		<!-- -------------------------PuDuTo Wallet balance -------PuDuTo Section-------------------------------------------->
 		<div class="investment-pool">
 			<h2>PuDuTo - Hold and Earn</h2>
+			<div id="contractAddressDisplay"></div> 	
 			<br>
 			<div class="blockchain-container">
+				<div class="blockchain-balance"> 
+					<h4>SELL PuDuTo USD </h4>									
+						<p > <span id="formattedPuDoToSellUSDPrice" style=" font-size: 25px"class="tooltip" data-tooltip="USD Sell price for 1 PuDuTo" >0</span></p>
+						<p > <span id="formattedPuDoToSellBNBPrice" class="tooltip" data-tooltip="BNB price to sell 1 PuDuTo" >0</span></p>
+				</div>
+				<div class="blockchain-balance" ;>
+					<h4>You own</h4>									
+						<p > <span id="PuDuToWalletBalance" style=" font-size: 20px" class="tooltip" data-tooltip="PuDuTo in your wallet" >0</span></p>
+						PuDuTo
+						<p style=" font-size: 9px"><span id="totalTokenSupply" style=" font-size: 14px" class="tooltip" data-tooltip="PuDuTo are in circulation">1</span> supply</p>
+						
+						
+				</div>
+				<div class="blockchain-balance">
+					<h4>You Hold</h4>
+					<p  > <span id="percentage-held" style=" font-size: 20px" class="tooltip" data-tooltip="This is your percentage of PuDuTo in circulation">Loading...</span> </p>
+					<!--<p ><span id="totalTokenSupply" class="tooltip" data-tooltip="How many PuDuTo are in Circulation">129847</span></p-->
+						Of PuDuTo
+				</div>
+				<div class="blockchain-balance">
+					<h4>BNB Currently</h4>
+					<p  > <span id="BNBcurrentPrice" style=" font-size: 20px" class="tooltip" data-tooltip="Current Market Price of BNB">Loading...</span> </p>
+					
+				</div>
+				<div class="blockchain-balance">
+					<h4>PUDUTO Pool</h4>
+					<p > <span id="PuDuToPoolValue"  class="tooltip" data-tooltip="PuDuTo Pool Value in USD">Loading...</span></p>
+					<p  > <span id="PuDuToPoolBNBValue" class="tooltip" data-tooltip="PuDuTo Pool Value in BNB">Loading...</span></p>
+				</div>
+				<div class="blockchain-balance">
+					<h4>BUY PuDuTo USD </h4>									
+						<p > <span id="formattedPuDoToUSDPrice" style=" font-size: 25px" class="tooltip" data-tooltip="USD to buy 1 PuDuTo" >0</span></p>
+						<p > <span id="formattedPuDoToBNBPrice" class="tooltip" data-tooltip="BNB cost to buy 1 PuDuTo" >0</span></p>
+				</div>
 				
-				<div class="blockchain-balance">
-					<h4>You are holding</h4>									
-						<p id="balance-display"> <span class="tooltip" data-tooltip="The total number of PuDuTo tokens you currently own." >0</span></p>
-						 PuDuTo
-				</div>
-				<div class="blockchain-balance">
-					<h4>There is</h4>
-					<p id="total-supply"><span class="tooltip" data-tooltip="How many PuDuTo are in circulation">129847</span></p>
-						 PuDuTo in circulation
-				</div>
-				<div class="blockchain-balance">
-					<h4>You have</h4>
-					
-					<p id="percentage-held" > <span class="tooltip" data-tooltip="This is your percentage of PuDuTo in circulation">Loading...</span> </p>
-					of the total PuDuTo
-				</div>
-				<div class="blockchain-balance">
-					<h4>You will receive</h4>
-					
-					<p id="return-amount" > <span class="tooltip" data-tooltip="You minimum return at the end of round 1">Loading...</span> USD-T </p>
-					at the end of round 1.
-				</div>
 				<div class="width100">
+					<div class="buyPuDuTo blockchain-balance">  
+						<p>Sell PuDuTo</p>
+							<input type="number" id="amountToSell" class="cta-input" placeholder="How Many to Sell" step="1" min="1">
+							<p id="usd-display" class="text14left">
+								<span id="Sellusd-equivalent">$0.00</span> USD
+							</p>
+							<p id="Sellresult-display" class="text14left">
+								<span id="pudutoBNBSellamount">0</span> BNB 
+							</p>
+							
+							<button class="cta-btn small-btn" id="sell-btn" data-tooltip="Sell PuDuTo tokens.">
+							Sell PuDuTo Tokens
+						</button>
+				 	 </div>  
 					<div class=" blockchain-balance width75 text14left">  
-					Buy PuDuTo<br>
-					Buying PuDuTo allows you to sit back and relax, let your money work for you. Your investemnt will be locked in the vault until the end of round 1, The return will be paid at the rate of
-					1 USD per PuDuTo.	
-					Buy 1 PuDuTo = .5 usd - Presale Offer only.
-					You cannot claim or exit while round is running, only between rounds.
-		
+						<p style="color: #00d9ff;">Buying and Selling PuDuTo
+						<br>
+						PRE-Sale Offer: </p>
+						Buy PuDuTo for $0.50 for each.
+						Price will increase to $1.50 before end of presale. Get in early for higher returns<br>
+						<span style="color: #00d9ff;">Selling PuDuTo: <br></span>
+						$0.25 will be paid if you want to get out before the round starts,<br>
+						Once the round starts your funds will be locked until the end of round one. Sit back and watch you return grow.<br>
+						Once the round starts Buying/Selling will be locked, you cant get in or out. Once the round ends Buying/Selling will be unlocked.
+						
 					</div>
 				  	<div class="buyPuDuTo blockchain-balance">  
-							<input type="number" id="amountToBuy" class="cta-input" placeholder="Enter BNB (BNB only)">
-							
-							<p id="result-display" class="text14left">
-								<span id="puduto-amount">0</span> PuDuTo 
+						<p>Buy PuDuTo</p>
+							<input type="number" id="amountToBuy" class="cta-input" placeholder="PuDoTo Amount" step="1" min="1">
+							<p id="usd-display" class="text14left">
+								<span id="usd-equivalent">$0.00</span> USD
 							</p>
-							<p id="usd-display" class="text14left">USD: 
-								<span id="usd-equivalent">$0.00</span>
+							<p id="result-display" class="text14left">
+								<span id="pudutoBNBamount">0</span> BNB 
 							</p>
 							
 							<button class="cta-btn small-btn" id="buy-btn" data-tooltip="Purchase PuDuTo tokens.">
@@ -240,46 +280,117 @@
 
 
 
-		<!----------------------------------PUDUFO-------------------------------------------------------------------->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		<!----------------------------------PUDUFO---------PuDuFo------PuDuFo------------------------------------------------------->
 		<div class="investment-pool">
-			<h2>PuDuFo - Goverence - High Return</h2>
+			<h2>PuDuFo -  Goverence </h2>
+			<div id="PuDuFocontractAddressDisplay"></div> 	
 			<br>
 			<div class="blockchain-container">
+				<div class="blockchain-balance"> 
+					<h4>SELL PuDuFo USD </h4>									
+						<p > <span id="formattedPuDoFoSellUSDPrice" style=" font-size: 25px"class="tooltip" data-tooltip="USD Sell price for 1 PuDuFo" >0</span></p>
+						<p > <span id="formattedPuDoFoSellBNBPrice" class="tooltip" data-tooltip="BNB price to sell 1 PuDuFo" >0</span></p>
+				</div>
+				<div class="blockchain-balance" ;>
+					<h4>You own</h4>									
+						<p > <span id="PuDuFoWalletBalance" style=" font-size: 20px" class="tooltip" data-tooltip="PuDuFo in your wallet" >0</span></p>
+						PuDuTo
+						<p style=" font-size: 9px"><span id="totalPuDuFoSupply" style=" font-size: 14px" class="tooltip" data-tooltip="PuDuFo are in circulation">1</span> supply</p>
+						
+						
+				</div>
+				<div class="blockchain-balance">
+					<h4>You Hold</h4>
+					<p  > <span id="PuDuFopercentage-held" style=" font-size: 20px" class="tooltip" data-tooltip="This is your percentage of PuDuFo in circulation">Loading...</span> </p>
+					<!--<p ><span id="totalTokenSupply" class="tooltip" data-tooltip="How many PuDuTo are in Circulation">129847</span></p-->
+						Of PuDuFo
+				</div>
+				<div class="blockchain-balance">
+					<h4>Influence</h4>
+					<p  > <span id="PuDuFoInfluence" style=" font-size: 20px" class="tooltip" data-tooltip="Your voting Influence">Loading...</span> </p>
+					Points
+				</div>
+				<div class="blockchain-balance">
+					<h4>PUDUFO Pool</h4>
+					<p > <span id="PuDuFoPoolValue"  class="tooltip" data-tooltip="PuDuFo Pool Value in USD">Loading...</span></p>
+					<p  > <span id="PuDuFoPoolBNBValue" class="tooltip" data-tooltip="PuDuFo Pool Value in BNB">Loading...</span></p>
+				</div>
+				<div class="blockchain-balance">
+					<h4>BUY PuDuFo USD </h4>									
+						<p > <span id="formattedPuDoFoUSDPrice" style=" font-size: 25px" class="tooltip" data-tooltip="USD to buy 1 PuDuFo" >0</span></p>
+						<p > <span id="formattedPuDoFoBNBPrice" class="tooltip" data-tooltip="BNB cost to buy 1 PuDuFo" >0</span></p>
+				</div>
 				
-				<div class="blockchain-balance">
-					<h4>Your Holding</h4>									
-						<p id="balance-display"> <span class="tooltip" data-tooltip="The total number of PuDuTo tokens you currently own." >0</span></p>
-						 PuDuTo
-				</div>
-				<div class="blockchain-balance">
-					<h4>There is</h4>
-					<p id="total-supply"><span class="tooltip" data-tooltip="How many PuDuTo are in circulation">129847</span></p>
-						 PuDuTo in circulation
-				</div>
-				<div class="blockchain-balance">
-					<h4>You have</h4>
-					
-					<p id="percentage-held" > <span class="tooltip" data-tooltip="This is your percentage of PuDuTo in circulation">Loading...</span> </p>
-					of the total PuDuTo
-				</div>
-				<div class="blockchain-balance">
-					<h4>You will receive</h4>
-					
-					<p id="percentage-held" > <span class="tooltip" data-tooltip="You minimum return at the end of round 1">Loading...</span> USD-T </p>
-					at the end of round 1.
-				</div>
-				
-				<div class="blockchain-balance">
-					<h4>Your BTC Rewards</h4>
-					
-					<p id="PuDuFo-BTC" > <span class="tooltip" data-tooltip="Total WBTC you will receive at the end of round 1">0.00000</span> wbtc </p>
-					<p id="PuDuFo-BTCusd" > <span class="tooltip" data-tooltip="Total value of WBTC at current market in usd">$0.00</span> USD </p>
-					at the end of round 1.
+				<div class="width100">
+					<div class="buyPuDuTo blockchain-balance">  
+						<p>Sell PuDuFo</p>
+							<input type="number" id="PuDuFoamountToSell" class="cta-input" placeholder="How Many PuDuFo to Sell" step="1" min="1">
+							<p id="PuDuFousd-display" class="text14left">
+								<span id="PuDuFoSellusd-equivalent">$0.00</span> USD
+							</p>
+							<p id="PuDuFoSellresult-display" class="text14left">
+								<span id="PuDuFoBNBSellamount">0</span> BNB 
+							</p>
+							
+							<button class="cta-btn small-btn" id="PuDuFosell-btn" data-tooltip="Sell PuDuFo tokens.">
+							Sell PuDuFo Tokens
+						</button>
+				 	 </div>  
+					<div class=" blockchain-balance width75 text14left">  
+						<p style="color: #00d9ff;">Buying and Selling PuDuFo
+						<br>
+						PRE-Sale Offer: </p>
+						Buy PuDuFo for $0.80 for each.
+						Goverence and High Rewards<br>
+						<span style="color: #00d9ff;">Selling PuDuFo: <br></span>
+						$0.25 will be paid if you want to get out before the round starts,<br>
+						Vote and have a say on the transactions, be involved and get rewarded<br>
+						Be part of the Pump and Dump community, master the art of crypto timing. Make some money..
+						
+					</div>
+				  	<div class="buyPuDuTo blockchain-balance">  
+						<p>Buy PuDuFo</p>
+							<input type="number" id="PuDuFoamountToBuy" class="cta-input" placeholder="PuDoFo Amount" step="1" min="1">
+							<p id="PuDuFousd-display" class="text14left">
+								<span id="PuDuFousd-equivalent">$0.00</span> USD
+							</p>
+							<p id="PuDuForesult-display" class="text14left">
+								<span id="PuDuFoBNBamount">0</span> BNB 
+							</p>
+							
+							<button class="cta-btn small-btn" id="PuDuFobuy-btn" data-tooltip="Purchase PuDuFo tokens.">
+							Buy PuDuFo Tokens
+						</button>
+				 	 </div>  
 				</div>
 			</div>
-		</div>
-
-
+</div>
 
 
 
@@ -654,6 +765,7 @@
 <script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
 
 <script src="ScriptGetPuDuToBalance.js"></script>
+<script src="ScriptGetPuDuFoBalance.js"></script>
 <script src="script.js"></script>
 
 </body>

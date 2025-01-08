@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PuDuFo Token Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7fa;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #007bff;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group input,
+        .form-group button {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .form-group button {
+            background-color: #28a745;
+            color: white;
+            cursor: pointer;
+        }
+
+        .form-group button:disabled {
+            background-color: #ccc;
+        }
+
+        .price-display{
+            text-align: center;
+            margin: 20px 0;
+            font-size: 1.2em;
+        }
+        
+        .wallet-address-display {
+            text-align: center;
+            margin: 20px 0;
+            font-size: 1.2em;
+        }
+
+        .error {
+            color: red;
+        }
+
+        .success {
+            color: green;
+        }
+
+        footer {
+            background-color: #007bff;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+
+        /*-- ---------------------------lock buttons -------------------------------------------- */
+                    /* Style the container to display items side by side */
+            #LockContainer {
+                display: flex; /* Use flexbox to align items side by side */
+                align-items: center; /* Vertically center the items */
+                gap: 10px; /* Add space between the button and the text */
+            }
+
+            /* Optionally, style the button */
+            #toggleSellLockButton {
+                padding: 10px 20px;
+                background-color: #4CAF50; /* Green background */
+                color: white;
+                border: none;
+                cursor: pointer;
+                font-size: 16px;
+                border-radius: 5px;
+            }
+            #toggleBuyLockButton {
+                padding: 10px 20px;
+                background-color: #4CAF50; /* Green background */
+                color: white;
+                border: none;
+                cursor: pointer;
+                font-size: 16px;
+                border-radius: 5px;
+            }
+            
+            #withdrawlLockButton {
+                padding: 10px 20px;
+                background-color: #4CAF50; /* Green background */
+                color: white;
+                border: none;
+                cursor: pointer;
+                font-size: 16px;
+                border-radius: 5px;
+            }
+
+            #toggleSellLockButton:hover {
+                background-color: #45a049; /* Darker green when hovering */
+            }
+            #toggleBuyLockButton:hover {
+                background-color: #45a049; /* Darker green when hovering */
+            }
+            #withdrawlLockButton:hover {
+                background-color: #45a049; /* Darker green when hovering */
+            }
+
+            /* Optionally, style the lock status text */
+            #sellLockStatus {
+                font-size: 16px;
+                font-weight: bold;
+            }
+            #buyLockStatus {
+                font-size: 16px;
+                font-weight: bold;
+            }
+            #withdrawlLockStatus {
+                font-size: 16px;
+                font-weight: bold;
+            }
+
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Manage PuDuFo Token</h1>
+        <div id="walletAddressDisplay" class="wallet-address-display">Connect your wallet to continue</div>
+    </header>
+
+    <div class="container">
+        <h2>Buy or Sell PuDuFo Tokens</h2>
+        <div id="contractAddressDisplay" class="price-display">Loading contract address...</div>
+        <!-- ---------------------------------------------------------------------------------------------------------------Lock em up ----------------------->
+        <!-- -----------Sell Lock--------------------Sell Lock--------------------------Sell Lock--------------------Sell Lock---------------Sell Lock------------>       
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+            <div style="width: 100%; height: 100%; border: 1px solid black; border-radius: 15px;">
+                 <div id="LockContainer">
+                    <button id="toggleSellLockButton" onclick="toggleSellLock()">Lock Sell</button> <!-- Default text -->
+                    <div id="sellLockStatus">.........</div> <!-- Default status text -->
+                </div>
+                <div id="priceSellDisplay" class="price-display">Loading price...</div>
+                <div id="formattedSellPriceDisplay" class="price-display">Loading price...</div>
+                <div class="form-group" style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+                    <input type="number" id="newSellPrice" placeholder="New Sell Price $0.00" style="width: 140px; text-align: center;" />
+                    <button id="updateSellButton" onclick="updateSellTokenPrice()" style="width: 70px; text-align: center;">Update</button>  
+                </div>
+            </div>
+           <!-- -------------Buy Lock------------------------Buy Lock---------------------Buy Lock---------------------Buy Lock-----------------------Buy Lock-------- -->
+            <div style="width: 100%; height: 100%; border: 1px solid black; border-radius: 15px;">
+                <div id="LockContainer">
+                    <button id="toggleBuyLockButton" onclick="toggleBuyLock()">Lock Buy</button> <!-- Default text -->
+                    <div id="buyLockStatus">.........</div> <!-- Default status text -->
+                </div>
+                <div id="priceDisplay" class="price-display">Loading price...</div>
+                <div id="formattedPriceDisplay" class="price-display">Loading price...</div>
+                <div class="form-group" style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+                    <input type="number" id="newPrice" placeholder="New Buy Price $0.00" style="width: 140px; text-align: center;" />
+                    <button id="updateBuyButton" onclick="updateTokenPrice()" style="width: 70px; text-align: center;">Update</button>  
+                </div>
+            </div>
+            <!-- ------------Withdrawl Lock ---------------Withdrawl Lock ----------------Withdrawl Lock -------------Withdrawl Lock ---------------Withdrawl Lock --- -->
+            <div style="width: 100%; height: 100%; border: 1px solid black; border-radius: 15px;">
+                <div id="LockContainer">
+                    <button id="withdrawlLockButton" onclick="toggleWithdrawlLock()">Lock Buy</button> <!-- Default text -->
+                    <div id="withdrawlLockStatus">.........</div> <!-- Default status text -->
+                </div>
+                <div id="withdrawableBalanceDisplay" class="price-display" >Loading withdrawable BNB...</div>
+                <div id="withdrawableBalanceUSD" class="price-display" >Loading withdrawable USD...</div>
+                <div class="form-group" style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
+                    <label for="withdrawAmount">Amount to Withdraw (18 dec):</label>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="number" id="withdrawAmount" placeholder="Enter amount in BNB" style="width: 140px; text-align: center;">
+                        <button id="withdrawButton" style="width: 70px; text-align: center;">Withdraw</button>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+            <!---------------------------------------------------------------------------------------------------buy tokens--------------------------------------------->
+            <div style="width: 100%; height: 100%; border: 1px solid black; border-radius: 15px;">
+                <div class="form-group" style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
+                    <br>
+                    <label for="tokenAmount">Buy (in USD):</label>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="number" id="tokenAmount" placeholder="Enter amount in USD" style="width: 140px; text-align: center;">
+                        <button id="buyButton" style="width: 70px; text-align: center;">Buy Tokens</button>
+                    </div>
+                    <div style="padding: 10px;">
+                        How many PuDuFo do you want to buy                       
+                    </div>
+                </div>
+            </div>
+            <div style="width: 100%; height: 100%; border: 1px solid black; border-radius: 15px;">
+                 <!---------------------------------------------------------------------------------------------------Token stats--------------------------------------------->
+                <div id="totalTokenSupply" class="price-display">Loading contract info...</div>
+                <div id="tokenBalanceDisplay" class="price-display">Loading token balance...</div>
+                <div id="calculatedBNBDisplay"  class="price-display"></div>
+                <div id="BNBUSD" class="price-display" >getting BNB/USD...</div>
+
+
+            </div>
+            <div style="width: 100%; height: 100%; border: 1px solid black; border-radius: 15px;">
+                 <!---------------------------------------------------------------------------------------------------sell tokens--------------------------------------------->
+                
+                 <div style="width: 100%; height: 100%; border: 1px solid black; border-radius: 15px;">
+                    <div class="form-group" style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
+                        <br>
+                        <label for="sellAmount">Tokens to Sell:</label>
+                        <div style="display: flex; gap: 10px;">
+                            <input type="number" id="sellAmount" placeholder="Enter amount of tokens to sell" style="width: 140px; text-align: center;">
+                            <button id="sellButton" style="width: 70px; text-align: center;">Sell Tokens</button> 
+                        </div>
+                        <div style="padding: 10px;">
+                            Enter how many PuDuFo you want to sell                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>        
+        <div>
+            <input type="text" id="newOwnerAddress" placeholder="Enter new owner address">
+            <button onclick="transferOwnership(document.getElementById('newOwnerAddress').value)">Transfer Ownership</button>
+        </div>
+            <!------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+
+      
+     
+       
+        
+        
+      <!--  <input type="number" id="newPrice" placeholder="Enter new price in USD" />
+<button id="updateButton" onclick="updateTokenPrice()">Update Token Price</button>-->
+
+
+ 
+
+
+        <button id="connectWalletButton">Connect Wallet</button>
+
+        
+
+       
+
+        <div style="height: 140px; text-align: center;">
+          
+        </div>
+
+        <div id="statusMessage">
+            <p>&copy; 2024 PuDuTo Token Sale</p>
+        </div>
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.5.3/dist/web3.min.js"></script>
+    <script>
+        let web3;
+        let contractInstance;
+        let contractAddress;
+        let contractABI;
+
+        async function loadContractDetails() {
+            try {
+                const response = await fetch('./PuDuFocontractDetails.json');
+                const contractDetails = await response.json();
+                contractAddress = contractDetails.address;
+                contractABI = contractDetails.abi;
+
+                initWeb3();
+            } catch (error) {
+                console.error("Error loading contract details:", error);
+            }
+            
+        }
+
+        async function initWeb3() {
+            if (window.ethereum) {
+                web3 = new Web3(window.ethereum);
+                await window.ethereum.request({ method: 'eth_requestAccounts' });
+                contractInstance = new web3.eth.Contract(contractABI, contractAddress);
+                console.log(contractInstance);
+                updateInfo();
+            } else {
+                alert("Please install MetaMask!");
+            }
+        }
+
+        async function updateInfo() {
+         try {
+            // Fetch token price from the contract
+            const tokenPriceInUSD = await contractInstance.methods.tokenPriceInUSD().call();
+            const formattedTokenPrice = (tokenPriceInUSD / 1e2).toFixed(2); // Convert to 2 decimal places
+
+            // Fetch token SELL price from the contract
+            const tokenSellPriceInUSD = await contractInstance.methods.tokenSellPriceInUSD().call();
+            const formattedTokenSellPrice = (tokenSellPriceInUSD / 1e2).toFixed(2); // Convert to 2 decimal places
+
+            // Fetch the wallet address
+            const accounts = await web3.eth.getAccounts();
+            const walletAddress = accounts[0];
+
+            // Fetch total token supply
+            const totalSupply = await contractInstance.methods.getTotalSupply().call();
+
+            // Fetch token balance for the connected wallet
+            const balance = await contractInstance.methods.balanceOf(walletAddress).call();
+            const formattedBalance = web3.utils.fromWei(balance, 'ether');
+
+          //------------------------------------------------------------------------------------------------- withdrawlable balance---------------------------------------
+            const contractBalance = await web3.eth.getBalance(contractAddress);
+            const formattedValueBalance = web3.utils.fromWei(contractBalance, 'ether');
+
+            const bnbUSD = await contractInstance.methods.getBNBPriceInUSD().call();
+
+            const currentSellLockStatus = await contractInstance.methods.isSellLocked().call();
+            const currentBuyLockStatus = await contractInstance.methods.isBuyLocked().call();
+            const currentWithdrawlLockStatus = await contractInstance.methods.isWithdrawLocked().call();
+
+            // Calculate required BNB for the user's token balance
+            const tokenPriceInBNB = tokenPriceInUSD / bnbUSD; // Token price in USD divided by BNB price in USD
+            const formattedTokenPriceInBNB = tokenPriceInBNB.toFixed(8); // Format to 8 decimal places
+
+            // Update the HTML elements
+            document.getElementById('priceDisplay').innerText = `Wei Price: $${(tokenPriceInUSD / 1e18).toFixed(18)} USD`;
+            document.getElementById('formattedPriceDisplay').innerText = `Formatted Buy Price: $${formattedTokenPrice} USD`;
+
+            document.getElementById('priceSellDisplay').innerText = `Wei Price: $${(tokenSellPriceInUSD / 1e18).toFixed(18)} USD`;
+            document.getElementById('formattedSellPriceDisplay').innerText = `Formatted Sell Price: $${formattedTokenSellPrice} USD`;
+          
+           //--------------------------------------------------------------------------------------------------------------------------------------toggle locks -----------
+           //----------------------------------------------------------------------------------------Sell Lock--------------
+               
+           if (currentSellLockStatus.toString().toLowerCase() == "true") {
+               toggleSellLockButton.style.backgroundColor = "red";  // Button color when locked
+               document.getElementById("toggleSellLockButton").innerText = "Locked"; 
+               document.getElementById('sellLockStatus').innerText = "Cant Sell Tokens"; 
+            } else {
+               toggleSellLockButton.style.backgroundColor ="green";
+               document.getElementById("toggleSellLockButton").innerText = "UNLocked";
+               document.getElementById('sellLockStatus').innerText = "Can Sell Tokens"; 
+            }
+            // -------------------------------------------------------------------------------------Buy Lock------------ -->
+       
+            if (currentBuyLockStatus.toString().toLowerCase() == "true") {
+               toggleBuyLockButton.style.backgroundColor = "red";  // Button color when locked
+               document.getElementById("toggleBuyLockButton").innerText = "Locked"; 
+               document.getElementById('buyLockStatus').innerText = "Cant Buy Tokens"; 
+            } else {
+               toggleBuyLockButton.style.backgroundColor ="green";
+               document.getElementById("toggleBuyLockButton").innerText = "UNLocked";
+               document.getElementById('buyLockStatus').innerText = "Can Buy Tokens"; 
+            }
+
+            // -------------------------------------------------------------------------------------Buy Lock------------ -->
+       
+             if (currentWithdrawlLockStatus.toString().toLowerCase() == "true") {
+                withdrawlLockButton.style.backgroundColor = "red";  // Button color when locked
+               document.getElementById("withdrawlLockButton").innerText = "Locked"; 
+               document.getElementById('withdrawlLockStatus').innerText = "Cant Withdrawl"; 
+            } else {
+                withdrawlLockButton.style.backgroundColor ="green";
+               document.getElementById("withdrawlLockButton").innerText = "UNLocked";
+               document.getElementById('withdrawlLockStatus').innerText = "Can Withdrawl"; 
+            }
+           
+            //-- ------------------------------------------------------------------------------------------------------------------------------------------------------------ -->
+
+            document.getElementById('walletAddressDisplay').innerText = `Connected Wallet: ${walletAddress}`;
+            document.getElementById('contractAddressDisplay').innerText = `Contract Address: ${contractAddress}`;
+            document.getElementById('totalTokenSupply').innerText = `Tokens in Circulation: ${web3.utils.fromWei(totalSupply, 'ether')}`;
+            document.getElementById('tokenBalanceDisplay').innerText = `Your Token Balance: ${formattedBalance} PuDuFo`;
+
+          //-----------------------------------------------------------------------------------------------------------------------------------------------withdrawl calculations----------
+            document.getElementById('withdrawableBalanceDisplay').innerText = `Withdrawable Amount: ${formattedValueBalance} BNB`;
+            const bnbUSDInDecimal = (bnbUSD / 1e8).toFixed(2);
+           document.getElementById('BNBUSD').innerText =  `1 BNB is worth: $${(bnbUSDInDecimal)} USD - 1 PuDuFo = ${(formattedTokenPrice / (bnbUSD / 1e8)).toFixed(8)} BNB`;
+            // document.getElementById('BNBUSD').innerText =  `1 BNB is worth: $${(702.02).toFixed(2)} USD - 1 PuDuTo = ${(formattedTokenPrice / (702.02)).toFixed(8)} BNB`;
+            const totalWithdrawalInUSD = formattedValueBalance * bnbUSDInDecimal;
+            document.getElementById('withdrawableBalanceUSD').innerText =` Withdrawable Amount : $${totalWithdrawalInUSD.toFixed(2)} USD `;
+
+       } catch (error) {
+            console.error("Error fetching token data:", error);
+           // document.getElementById('tokenBalanceDisplay').innerText = "Error fetching token balance.";
+        }
+
+    }
+   
+
+        async function buyTokens() {
+            const tokenAmount = document.getElementById('tokenAmount').value;
+            if (!tokenAmount || tokenAmount <= 0) {
+                showStatusMessage("Please enter a valid amount of tokens.", 'error');
+                return;
+            }
+            const accounts = await web3.eth.getAccounts();
+            const buyer = accounts[0];
+            try {
+                const tokenAmountInWei = web3.utils.toWei(tokenAmount, 'ether');
+                const bnbAmount = await contractInstance.methods.calculateBNBAmount(tokenAmountInWei, await contractInstance.methods.getBNBPriceInUSD().call()).call();
+                await contractInstance.methods.buyWithTokens(tokenAmountInWei).send({
+                    from: buyer,
+                    value: bnbAmount
+                });
+                showStatusMessage("Purchase successful!", 'success');
+                updateInfo();
+            } catch (error) {
+                console.error("Error buying tokens:", error);
+                showStatusMessage("Transaction failed!", 'error');
+            }
+        }
+
+        async function sellTokens() {
+            const sellAmount = document.getElementById('sellAmount').value;
+            if (!sellAmount || sellAmount <= 0) {
+                showStatusMessage("Please enter a valid amount of tokens to sell.", 'error');
+                return;
+            }
+
+            const accounts = await web3.eth.getAccounts();
+            const seller = accounts[0];
+
+            try {
+                const tokenAmountInWei = web3.utils.toWei(sellAmount, 'ether');
+                await contractInstance.methods.sellTokensForBNB(tokenAmountInWei).send({
+                    from: seller
+                });
+
+                showStatusMessage("Sell successful!", 'success');
+                updateInfo();
+            } catch (error) {
+                console.error("Error selling tokens:", error);
+                showStatusMessage("Transaction failed!", 'error');
+            }
+        }
+
+//----------------------------------------------------------------------------------------------update token price-----------
+
+
+async function updateTokenPrice() {
+    const newPriceInput = document.getElementById('newPrice').value; // Assuming input is in dollars
+    if (!newPriceInput || isNaN(newPriceInput) || newPriceInput <= 0) {
+        alert("Please enter a valid token price in USD.");
+        return;
+    }
+
+    try {
+        const accounts = await web3.eth.getAccounts();
+        const owner = accounts[0];
+        
+        // Convert price to cents (uint256 expects integers)
+        const newPriceInCents = Math.round(newPriceInput * 100);
+
+        // Call the contract function
+        await contractInstance.methods.setTokenPriceInUSD(newPriceInCents).send({ from: owner });
+        updateInfo();
+        alert("Token price updated successfully!");
+    } catch (error) {
+        console.error("Error updating token price:", error);
+        alert("Failed to update token price.");
+    }
+}
+
+
+async function updateSellTokenPrice() {
+    const newSellPriceInput = document.getElementById('newSellPrice').value; // Assuming input is in dollars
+    if (!newSellPriceInput || isNaN(newSellPriceInput) || newSellPriceInput <= 0) {
+        alert("Please enter a valid token Sell price in USD.");
+        return;
+    }
+
+    try {
+        const accounts = await web3.eth.getAccounts();
+        const owner = accounts[0];
+        
+        // Convert price to cents (uint256 expects integers)
+        const newSellPriceInCents = Math.round(newSellPriceInput * 100);
+
+        // Call the contract function
+        await contractInstance.methods.setTokenSellPriceInUSD(newSellPriceInCents).send({ from: owner });
+        updateInfo();
+        alert("Token price updated successfully!");
+    } catch (error) {
+        console.error("Error updating token price:", error);
+        alert("Failed to update token price.");
+    }
+}
+
+
+
+
+//----------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+        // Function to display status messages
+        function showStatusMessage(message, type) {
+            const statusDiv = document.getElementById('statusMessage');
+            statusDiv.innerText = message;
+            statusDiv.style.color = type === 'success' ? 'green' : 'red';
+        }
+
+        // Add an event listener to the button
+        document.getElementById('withdrawButton').addEventListener('click', async () => {
+            await withdrawFunds();
+        });
+
+
+
+        async function withdrawFunds() {
+            const withdrawAmount = document.getElementById('withdrawAmount').value;
+            if (!withdrawAmount || withdrawAmount <= 0) {
+                showStatusMessage("Please enter a valid withdrawal amount.", 'error');
+                return;
+            }
+
+            try {
+                // Convert Ether to Wei
+                const withdrawAmountInWei = web3.utils.toWei(withdrawAmount, 'ether');
+
+                const accounts = await web3.eth.getAccounts();
+                const owner = accounts[0];
+
+                // Send the transaction
+                await contractInstance.methods.withdrawFunds(withdrawAmountInWei).send({ from: owner });
+                updateInfo();
+                showStatusMessage("Withdrawal successful!", 'success');
+            } catch (error) {
+                console.error("Error withdrawing funds:", error);
+                showStatusMessage("Transaction failed!", 'error');
+            }
+        }
+
+
+
+
+        function showStatusMessage(message, type) {
+            const statusMessageDiv = document.getElementById('statusMessage');
+            statusMessageDiv.innerText = message;
+            statusMessageDiv.className = type;
+        }
+
+
+
+
+//---------------------------------------------------------------------------------------Lockem down boys--------------------------------------------------------
+//--------------------------------------lock/unlock selling -------------------------------------------------------------------------------------
+
+// Function to toggle the sell lock
+async function toggleSellLock() {
+    try {
+        const accounts = await web3.eth.getAccounts();
+        const currentLockStatus = await contractInstance.methods.isSellLocked().call();
+        // Toggle the lock status
+        const newLockStatus = !currentLockStatus; // If true, set to false, and vice versa
+        // Send transaction to update the lock status
+        const receipt = await contractInstance.methods.setSellLock(newLockStatus).send({ from: accounts[0] });
+        // Provide feedback to the user
+        updateInfo();
+        alert(`SELL lock has been ${newLockStatus ? "enabled" : "disabled"}.`);
+        console.log(receipt);
+       // Optionally update the UI to reflect the new status
+      
+    } catch (error) {
+        console.error("Error toggling sell lock:", error);
+        alert("Failed to toggle sell lock.");
+    }
+}
+//--------------------------------------lock/unlock buying -----------------------------------------------------------------------------------
+async function toggleBuyLock() {
+    try {
+        const accounts = await web3.eth.getAccounts();
+        const currentLockStatus = await contractInstance.methods.isBuyLocked().call();
+        // Toggle the lock status
+        const newLockStatus = !currentLockStatus; // If true, set to false, and vice versa
+        // Send transaction to update the lock status
+        const receipt = await contractInstance.methods.setBuyLock(newLockStatus).send({ from: accounts[0] });
+        // Provide feedback to the user
+        location.reload();
+        alert(`BUY lock has been ${newLockStatus ? "enabled" : "disabled"}.`);
+        console.log(receipt);
+       // Optionally update the UI to reflect the new status
+      
+    } catch (error) {
+        console.error("Error toggling sell lock:", error);
+        alert("Failed to toggle sell lock.");
+    }
+}
+//--------------------------------------lock/unlock withdrawls  --------------------------------------------------------------------------------
+async function toggleWithdrawlLock() {
+    try {
+        const accounts = await web3.eth.getAccounts();
+        const currentLockStatus = await contractInstance.methods.isWithdrawLocked().call();
+        // Toggle the lock status
+        const newLockStatus = !currentLockStatus; // If true, set to false, and vice versa
+        // Send transaction to update the lock status
+        const receipt = await contractInstance.methods.setWithdrawLock(newLockStatus).send({ from: accounts[0] });
+        // Provide feedback to the user
+        updateInfo();
+        alert(`WITHDRAWL lock has been ${newLockStatus ? "enabled" : "disabled"}.`);
+        console.log(receipt);
+       // Optionally update the UI to reflect the new status
+      
+    } catch (error) {
+        console.error("Error toggling Withdrawl lock:", error);
+        alert("Failed to toggle Withdrawl lock.");
+    }
+}
+//------------------------------------------------------------------------------------------------------------------------------------------------
+
+// JavaScript to interact with the smart contract
+async function transferOwnership(newOwnerAddress) {
+    
+        // Check if the new owner address is valid
+       //----- yeah, its a mess, just to stop anything or anyone hijacking the ownership - when needed will fix to work -----------------
+        // Call the transferOwnership function from the contract
+      //----------- fix code to work,  await contractInstance.methods.transferOwnership(newOwnerAddress).send({ from: currentAccount });
+// contract
+// Function to transfer ownership
+    // Function to transfer ownership
+ //   function transferOwnership(address newOwner) public onlyOwner {
+ //         require(newOwner != address(0), "New owner cannot be zero address");
+ //           owner = newOwner;
+     //   }
+
+        // Confirm the transaction
+     //   console.log(`Ownership successfully transferred to: ${newOwnerAddress}`);
+    //} catch (error) {
+     //   console.error("Error transferring ownership:", error);
+   // }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        document.getElementById('connectWalletButton').addEventListener('click', initWeb3);
+        document.getElementById('buyButton').addEventListener('click', buyTokens);
+        document.getElementById('sellButton').addEventListener('click', sellTokens);
+        document.getElementById('withdrawButton').addEventListener('click', withdrawFunds);
+
+
+        window.onload = loadContractDetails;
+    </script>
+</body>
+</html>
