@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compare Token Prices</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+        }
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            font-weight: bold;
+        }
+        select, button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #007BFF;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 20px;
+            font-weight: bold;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Compare Token Prices</h2>
+        <div class="form-group">
+            <label for="token1">Select Token 1:</label>
+            <select id="token1">
+                <option value="">-- Select Token 1 --</option>
+                <option value="0x55d398326f99059fF775485246999027B3197955">USDT</option>
+                <option value="0x7130d2A12B9BCbFAe4f2634d864A1Ee1Ce3Ead9c">BTC</option>
+                <option value="0x2170Ed0880ac9A755fd29B2688956BD959F933F8">ETH</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="token2">Select Token 2:</label>
+            <select id="token2">
+                <option value="">-- Select Token 2 --</option>
+                <option value="0x55d398326f99059fF775485246999027B3197955">USDT</option>
+                <option value="0x7130d2A12B9BCbFAe4f2634d864A1Ee1Ce3Ead9c">BTC</option>
+                <option value="0x2170Ed0880ac9A755fd29B2688956BD959F933F8">ETH</option>
+            </select>
+        </div>
+
+        <button onclick="comparePrices()">Compare Prices</button>
+
+        <div id="result" class="result"></div>
+    </div>
+
+    <script>
+        async function comparePrices() {
+            const token1 = document.getElementById('token1').value;
+            const token2 = document.getElementById('token2').value;
+            const resultDiv = document.getElementById('result');
+
+            if (!token1 || !token2) {
+                resultDiv.textContent = 'Please select both tokens.';
+                return;
+            }
+
+            try {
+                const response = await fetch('https://api.thegraph.com/subgraphs/name/pancakeswap/exchange-v2', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        query: `{
+                            pairs(where: {token0: "${token1}", token1: "${token2}"}) {
+                                token0Price
+                                token1Price
+                            }
+                        }`
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.data && data.data.pairs.length > 0) {
+                    const pair = data.data.pairs[0];
+                    resultDiv.textContent = `Price of 1 Token 1 (${token1}): ${pair.token0Price} Token 2 (${token2})`;  
+                } else {
+                    resultDiv.textContent = 'Pair not found or no price data available.';
+                }
+            } catch (error) {
+                console.error('Error fetching price data:', error);
+                resultDiv.textContent = 'Error fetching price data. Check the console for details.';
+            }
+        }
+    </script>
+</body>
+</html>

@@ -256,18 +256,18 @@
             <span id="PrevExpectedUSDT" style="color:#438ce3; font-size: 16px;" >Initial USDT...</span><br>
             <span id="PrevExpectedBNB" style="color:#438ce3; font-size: 16px;" > Initial BNB...</span>
         </div>
-        </div>
 
-        <!-- TradingView Widget BEGIN -->
-<div class="tradingview-widget-container">
+ <!-- TradingView Widget BEGIN -->
+ <div class="tradingview-widget-container " >
+    <br>
     <div class="tradingview-widget-container__widget"></div>
     <div class="tradingview-widget-copyright"><a href="https://www.tradingview.com/" rel="noopener nofollow" target="_blank"><span class="blue-text">Track all markets on TradingView</span></a></div>
     <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
     {
-    "width": "510",
+    "width": "500",
     "height": "400",
     "symbol": "BINANCE:BNBUSD",
-    "interval": "W",
+    "interval": "30",
     "timezone": "exchange",
     "theme": "dark",
     "style": "1",
@@ -280,6 +280,10 @@
     </script>
   </div>
   <!-- TradingView Widget END -->
+
+        </div>
+
+       
 
 
 
@@ -367,7 +371,14 @@
             <input type="number" id="votePoints" placeholder="Enter Vote Points">
         </div>
         <button class="button" onclick="setVotePoints()">Set Influence Points</button>
-      
+
+        <div class="input-group">
+            <label for="influencePoints">Set Influence Points required to vote, must have greater to vote</label>
+            <input type="number" id="influencePoints" placeholder="Enter Vote Points">
+        </div>
+      <!--------  <button class="button" onclick="setInfluencePointsRequired()"> Set Influence Points</button>   --> 
+
+
     </div>
 
     
@@ -458,7 +469,7 @@
             document.getElementById('walletBalanceUSDT').innerText = `USDT in wallet: ${formattedContractValueUSDT}`;
             document.getElementById('walletBalanceUSDT1').innerText = `$${formattedContractValueUSDT}`;
 
-            //--------------------------------------------------------------------------------votes--------------------------------------
+            //--------------------------------------------------------------------------------votes--influence ------------------------------------
            //  const influencePoints = await contract.methods.getVotePoints().call();
            const influencePoints = await contract.methods.getInfluencePoints().call({ from: connectedWallet });
             console.log(`influencePoints: ${influencePoints}`);
@@ -473,7 +484,15 @@
             console.log(`Votes received: ${votesCurrent}`);
             document.getElementById('votesCurrent').innerText = `${votesCurrent}`;
 
-           
+            if ((votesNeeded - votesCurrent) < influencePoints){
+
+                showResult(`Just ${votesNeeded - votesCurrent} points to go, Your vote will make it happen. `);
+            } else{
+                
+                showResult(`${votesNeeded - votesCurrent} more points needed initiate next trade.`);
+            }
+
+            
 
             //------------------------------------------------------------expected bnb usdt to receive for trade---------------------------
             try {
@@ -572,14 +591,14 @@
             //-----------------------------------------------------------------------------------Calculate it------------------------
             const BNBprofitloss = (formattedExpectedBNB - formattedPreviousBNB);
             const USDTprofitloss = (formattedExpectedUSDT - formattedPreviousUSDT);
-            const USDTpercentagePL = ((USDTprofitloss / formattedPreviousUSDT) * 100).toFixed(4);
+            const USDTpercentagePL = ((USDTprofitloss / formattedPreviousUSDT) * 100).toFixed(2);
             
                 // Calculate USDT profit/loss
                 const formattedValue = parseFloat(USDTprofitloss).toFixed(4);                                             //
                 let tradeMessageUSDT = "";
             if (USDTprofitloss >= 0) {
                 tradeMessageUSDT = `Good Trade (USD) - Profit Expected $${formattedExpectedUSDT} - ${formattedPreviousUSDT} = $${formattedValue}`;
-                tradeMessageUSDT = `Profit time, you can make $${formattedValue} ${USDTpercentagePL}% how far will you push it, money money`;
+                tradeMessageUSDT = `Profit time, you can make $${formattedValue}  _  ${USDTpercentagePL}% how far will you push it, money money`;
                 document.getElementById('nextTradeDetails').style.color = 'green';
                 document.getElementById('PrevExpectedUSDT').innerText = `You can make $${(formattedExpectedUSDT - formattedPreviousUSDT).toFixed(4)}usdt - on your $${formattedPreviousUSDT}`;
                 document.getElementById('nextTradeDetails').style.color = 'green';
@@ -631,7 +650,9 @@
                 document.getElementById('fadeBuy').style.opacity = '0.2';
             }
             document.getElementById('nextTradeDetails').innerText = `${tradeMessageUSDT}`;
-            showResult(`Refreshed`);
+            
+            
+            
         }
 
 
@@ -688,6 +709,19 @@
             await contract.methods.setVotePointsRequired(votePoints).send({ from: accounts[0] });
             showResult(`Vote points set to ${votePoints}`);
         }
+       
+      //  async function setInfluencePointsRequired() {
+       //     try{
+       //     const influencePointsRequired = document.getElementById('influencePoints').value;
+       //     const accounts = await web3.eth.getAccounts();
+       //     await contract.methods.setInfluenceRequiredRequired(influencePoints).send({ from: accounts[0] });
+       //     showResult(`Influence required points set to ${influencePoints}`);
+       //     } catch (error)
+       //     { console.log(`influence required update error ${error.message}`);}
+      //  }
+
+     
+
 
         async function addVote() {
             const accounts = await web3.eth.getAccounts();
