@@ -1,88 +1,81 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Token Price Calculator</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-        .container {
-            width: 300px;
-            margin: auto;
-        }
-        select, input, button {
-            width: 100%;
-            padding: 10px;
-            margin: 5px 0;
-        }
-        #result {
-            margin-top: 20px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blockchain Values Display</title>
+  <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      text-align: center;
+      background-color: #fff;
+      padding: 20px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    #values p {
+      font-size: 18px;
+      color: #444;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h2>Token Price Calculator</h2>
-        <label for="token1">Token 1:</label>
-        <select id="token1">
-            <option value="0xae13d989dac2f0debff460ac112a837c89baa7cd">BNB</option>
-            <option value="0xd66c6B4F0be8CE5b39D52E0Fd1344c389929B378">ETH</option>
-            <option value="0x6ce8dA28E2f864420840cF74474eFf5fD80E65B8">BTC</option>
-            <option value="0x337610d27c682E347C9cD60BD4b3b107C9d34dDd">USDT</option>
-        </select>
-
-        <label for="token2">Token 2:</label>
-        <select id="token2">
-            <option value="0xae13d989dac2f0debff460ac112a837c89baa7cd">BNB</option>
-            <option value="0xd66c6B4F0be8CE5b39D52E0Fd1344c389929B378">ETH</option>
-            <option value="0x6ce8dA28E2f864420840cF74474eFf5fD80E65B8">BTC</option>
-            <option value="0x337610d27c682E347C9cD60BD4b3b107C9d34dDd">USDT</option>
-        </select>
-
-        <label for="amountIn">Amount In:</label>
-        <input type="number" id="amountIn" placeholder="Enter amount" />
-
-        <button onclick="fetchTokenData()">Get Token Data</button>
-
-        <div id="result">
-            <p>Amount Out: <span id="amountOut">0</span></p>
-            <p>USDT Value: <span id="usdtValue">0</span></p>
-        </div>
+  <div class="container">
+    <h1>Blockchain Trading Information</h1>
+    
+    <div id="values">
+      <p><strong>1 BNB Value in USDT:</strong> <span id="bnbValue">Loading...</span></p>
+      <p><strong>1 BTC Value in USDT:</strong> <span id="btcValue">Loading...</span></p>
+      <p><strong>1 ETH Value in USDT:</strong> <span id="ethValue">Loading...</span></p>
+      
+      <p><strong>BNB Balance:</strong> <span id="bnbBalance">Loading...</span></p>
+      <p><strong>USDT Balance:</strong> <span id="usdtBalance">Loading...</span></p>
+      <p><strong>ETH Balance:</strong> <span id="ethBalance">Loading...</span></p>
+      <p><strong>BTC Balance:</strong> <span id="btcBalance">Loading...</span></p>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/web3@1.5.3/dist/web3.min.js"></script>
-   
-    <script>
-        let web3;
-        let contractInstance;
-        let userAddress = [];
+    
+    <button id="fetchData" onclick="fetchBlockchainData()">Fetch Data</button>
+  </div>
 
-        // Contract ABI and address
-        const contractABI = [
+  <script>
+    // Setup Web3.js
+    let web3;
+    let contract;
+    const contractAddress = "0x7D18FbA679DC7F0330EE5aa1F41ED8703c5F5034"; // Replace with your contract address
+    const abi = [
 	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "_router",
-				"type": "address"
-			}
-		],
-		"name": "setRouterAddress",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "_usdt",
-				"type": "address"
-			}
-		],
-		"name": "setUsdtAddress",
+		"inputs": [],
+		"name": "trade",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
@@ -96,7 +89,27 @@
 			},
 			{
 				"internalType": "address",
-				"name": "_usdt",
+				"name": "_contractAddress",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "_bnbAddress",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "_usdtAddress",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "_ethAddress",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "_btcAddress",
 				"type": "address"
 			}
 		],
@@ -104,33 +117,369 @@
 		"type": "constructor"
 	},
 	{
+		"anonymous": false,
 		"inputs": [
 			{
-				"internalType": "address",
-				"name": "tokenIn",
-				"type": "address"
+				"indexed": false,
+				"internalType": "string",
+				"name": "action",
+				"type": "string"
 			},
 			{
-				"internalType": "address",
-				"name": "tokenOut",
-				"type": "address"
-			},
-			{
+				"indexed": false,
 				"internalType": "uint256",
-				"name": "amountIn",
+				"name": "amount",
 				"type": "uint256"
 			}
 		],
-		"name": "getEquivalentTokenAmount",
+		"name": "TradeExecuted",
+		"type": "event"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_bnbAddress",
+				"type": "address"
+			}
+		],
+		"name": "updateBNBAddress",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_btcAddress",
+				"type": "address"
+			}
+		],
+		"name": "updateBTCAddress",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_contractAddress",
+				"type": "address"
+			}
+		],
+		"name": "updateContractAddress",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_ethAddress",
+				"type": "address"
+			}
+		],
+		"name": "updateETHAddress",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_router",
+				"type": "address"
+			}
+		],
+		"name": "updateRouter",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_usdtAddress",
+				"type": "address"
+			}
+		],
+		"name": "updateUSDTAddress",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "bnbAddress",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "btcAddress",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "contractAddress",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "ethAddress",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getBNBBalance",
 		"outputs": [
 			{
 				"internalType": "uint256",
-				"name": "amountOut",
+				"name": "",
 				"type": "uint256"
-			},
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getBNBtoBTC",
+		"outputs": [
 			{
 				"internalType": "uint256",
-				"name": "usdtValue",
+				"name": "expectedBTC",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getBNBtoETH",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "expectedETH",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getBNBtoUSDT",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "expectedUSDT",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getBNBValue",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getBTCBalance",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getBTCtoBNB",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "expectedBNB",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getBTCtoUSDT",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "expectedUSDT",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getBTCValue",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getETHBalance",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getETHtoBNB",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "expectedBNB",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getETHtoUSDT",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "expectedUSDT",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getETHValue",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getUSDTBalance",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getUSDTtoBNB",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "expectedBNB",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getUSDTtoBTC",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "expectedBTC",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getUSDTtoETH",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "expectedETH",
 				"type": "uint256"
 			}
 		],
@@ -152,10 +501,10 @@
 	},
 	{
 		"inputs": [],
-		"name": "router",
+		"name": "pancakeRouter",
 		"outputs": [
 			{
-				"internalType": "address",
+				"internalType": "contract IPancakeRouter02",
 				"name": "",
 				"type": "address"
 			}
@@ -165,7 +514,7 @@
 	},
 	{
 		"inputs": [],
-		"name": "usdt",
+		"name": "usdtAddress",
 		"outputs": [
 			{
 				"internalType": "address",
@@ -177,67 +526,46 @@
 		"type": "function"
 	}
 ];
-console.log(`end of abi`);
-        const contractAddress = "0x4f8D05285F3CE182169F4607Aa127106a669D981"; // Replace with your contract address
 
-        // Token decimals mapping
-        const tokenDecimals = {
-            "0xae13d989dac2f0debff460ac112a837c89baa7cd": 18, // BNB
-            "0xd66c6B4F0be8CE5b39D52E0Fd1344c389929B378": 18, // ETH
-            "0x6ce8dA28E2f864420840cF74474eFf5fD80E65B8": 18, // BTC
-            "0x337610d27c682E347C9cD60BD4b3b107C9d34dDd": 6   // USDT
-        };
-		console.log(`token decimals`);
+    window.onload = async () => {
+      if (window.ethereum) {
+        web3 = new Web3(window.ethereum);
+        await window.ethereum.enable();  // Request user account access
+        contract = new web3.eth.Contract(abi, contractAddress);
+        fetchBlockchainData(); // Fetch data when page loads
+      } else {
+        alert("Please install MetaMask!");
+      }
+    };
 
-        async function initWeb3() {
-            if (window.ethereum) {
-                web3 = new Web3(window.ethereum);
-                await window.ethereum.request({ method: 'eth_requestAccounts' });
+    // Function to fetch all the data from the contract
+    async function fetchBlockchainData() {
+      try {
+        // Fetching values from the contract
+        const bnbValue = await contract.methods.getBNBValue().call();
+        const btcValue = await contract.methods.getBTCValue().call();
+        const ethValue = await contract.methods.getETHValue().call();
 
-                // Get the user's address
-                userAddress = await web3.eth.getAccounts();
-                console.log("User address:", userAddress[0]);
+        const bnbBalance = await contract.methods.getBNBBalance().call();
+        const usdtBalance = await contract.methods.getUSDTBalance().call();
+        const ethBalance = await contract.methods.getETHBalance().call();
+        const btcBalance = await contract.methods.getBTCBalance().call();
 
-                contractInstance = new web3.eth.Contract(contractABI, contractAddress);
-                console.log(contractInstance);
-            } else {
-                alert("Please install MetaMask!");
-            }
-        }
+        // Display values on the page
+        document.getElementById("bnbValue").innerText = web3.utils.fromWei(bnbValue, 'ether');
+        document.getElementById("btcValue").innerText = web3.utils.fromWei(btcValue, 'ether');
+        document.getElementById("ethValue").innerText = web3.utils.fromWei(ethValue, 'ether');
+        
+        document.getElementById("bnbBalance").innerText = web3.utils.fromWei(bnbBalance, 'ether');
+        document.getElementById("usdtBalance").innerText = web3.utils.fromWei(usdtBalance, 'ether');
+        document.getElementById("ethBalance").innerText = web3.utils.fromWei(ethBalance, 'ether');
+        document.getElementById("btcBalance").innerText = web3.utils.fromWei(btcBalance, 'ether');
 
-        async function fetchTokenData() {
-            try {
-                const token1 = document.getElementById('token1').value;
-                const token2 = document.getElementById('token2').value;
-                const amountIn = document.getElementById('amountIn').value;
-				console.log(`token 1 ${token1}   token 2 ${token2}    amountIn ${amountIn}`);
-                // Validate token addresses
-             //   if (!tokenDecimals[token1] || !tokenDecimals[token2]) {
-              //      alert("Invalid token address selected.");
-             //      return;
-              //  }
-
-                // Convert amountIn to the appropriate decimals
-                const amountInWei = BigInt(amountIn) * BigInt(10 ** tokenDecimals[token1]);
-				console.log(`amount in wei ${amountInWei} `);
-                const result = await contractInstance.methods
-                    .getEquivalentTokenAmount(token1, token2, amountInWei)
-                    .call({ from: userAddress[0], gas: 10000000 });
-
-				//	console.log(`result ${result} `);	
-                const amountOut = result[0] ;// / BigInt(10 ** tokenDecimals[token2]);
-                const usdtValue = result[1] ;/// BigInt(10 ** 6); // USDT is always 6 decimals
-				console.log(`amountOut ${amountOut} `);	
-                document.getElementById('amountOut').textContent = amountOut.toString();
-                document.getElementById('usdtValue').textContent = usdtValue.toString();
-            } catch (error) {
-                console.error("Error fetching data:", error);
-                alert("An error occurred while fetching the data. Please try again.");
-            }
-        }
-
-        // Initialize Web3 and the contract
-        initWeb3();
-    </script>
+      } catch (error) {
+        console.error(error);
+        alert("Error fetching data from contract.");
+      }
+    }
+  </script>
 </body>
 </html>
